@@ -1,18 +1,26 @@
 @php
-$user = Auth::user();
+    $user = Auth::user();
 @endphp
 
 <header
     class="sticky top-4 z-20 mx-4 mt-4 flex h-[64px] items-center gap-3 rounded-3xl bg-white px-4 shadow-sm sm:mx-6 sm:px-6 lg:mx-6 lg:mt-4 lg:mr-6">
 
-    {{-- Mobile sidebar toggle (controls parent x-data) --}}
+    {{-- Mobile sidebar toggle --}}
     <button type="button" @click="sidebarOpen = true" aria-label="Ouvrir le menu"
-        class="inline-grid h-10 w-10 place-items-center rounded-full bg-slate-100/70 text-slate-600 transition hover:bg-pcc-yellow/15 hover:text-pcc-yellow lg:hidden">
+        class="inline-grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100/70 text-slate-600 transition hover:bg-pcc-yellow/15 hover:text-pcc-yellow lg:hidden">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round" class="h-4 w-4">
             <path d="M3 6h18M3 12h18M3 18h18" />
         </svg>
     </button>
+
+    {{-- Greeting (desktop) --}}
+    <div class="hidden shrink-0 flex-col leading-tight lg:flex">
+        <span class="text-[14px] font-bold text-slate-900">
+            Bonjour, {{ $user?->name }} 👋
+        </span>
+        <span class="text-[11px] text-slate-500">Voici un aperçu de votre activité aujourd'hui.</span>
+    </div>
 
     {{-- Search --}}
     <label class="relative ml-1 flex w-full max-w-md items-center">
@@ -61,20 +69,21 @@ $user = Auth::user();
                 <button type="button"
                     class="flex items-center gap-2 rounded-full bg-slate-100/70 py-1 pl-1 pr-3 transition hover:bg-pcc-yellow/15">
                     @if ($user && $user->profile_photo_url)
-                    <img class="h-8 w-8 rounded-full object-cover" src="{{ $user->profile_photo_url }}"
-                        alt="{{ $user->name }}">
+                        <img class="h-8 w-8 rounded-full object-cover" src="{{ $user->profile_photo_url }}"
+                            alt="{{ $user->name }}">
                     @else
-                    <span
-                        class="grid h-8 w-8 place-items-center rounded-full bg-pcc-yellow text-[12px] font-bold text-[#101820]">
-                        {{ $user ? strtoupper(substr($user->name, 0, 1)) : '?' }}
-                    </span>
+                        <span
+                            class="grid h-8 w-8 place-items-center rounded-full bg-pcc-yellow text-[12px] font-bold text-[#101820]">
+                            {{ $user ? strtoupper(substr($user->name, 0, 1)) : '?' }}
+                        </span>
                     @endif
                     <span class="hidden flex-col text-left leading-tight sm:flex">
                         <span class="text-[13px] font-bold text-slate-800">{{ $user?->name }}</span>
                         <span class="text-[11px] text-slate-500">{{ $user?->email }}</span>
                     </span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="hidden h-3 w-3 text-slate-400 sm:block" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" class="hidden h-3 w-3 text-slate-400 sm:block"
+                        aria-hidden="true">
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </button>
@@ -89,7 +98,7 @@ $user = Auth::user();
                 <x-dropdown-link href="{{ route('profile.show') }}">{{ __('Profile') }}</x-dropdown-link>
 
                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                <x-dropdown-link href="{{ route('api-tokens.index') }}">{{ __('API Tokens') }}</x-dropdown-link>
+                    <x-dropdown-link href="{{ route('api-tokens.index') }}">{{ __('API Tokens') }}</x-dropdown-link>
                 @endif
 
                 <div class="mx-3 my-1 h-px bg-slate-100"></div>

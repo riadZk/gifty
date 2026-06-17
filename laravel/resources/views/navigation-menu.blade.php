@@ -1,15 +1,14 @@
 @php
-$isActive = fn (string $route) => request()->routeIs($route);
+    $isActive = fn(string $route) => request()->routeIs($route);
 
-$linkBase = 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-[13px] font-semibold transition';
-$linkIdle = 'text-slate-700 hover:bg-slate-100 hover:text-slate-900';
-$linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,198,11,0.25)]';
+    $linkBase = 'group flex items-center gap-3 rounded-2xl px-4 py-3 text-[13px] font-semibold transition';
+    $linkIdle = 'text-slate-700 hover:bg-slate-100 hover:text-slate-900';
+    $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,198,11,0.25)]';
 @endphp
 
 <aside
     class="fixed inset-y-0 left-0 z-40 flex w-[240px] -translate-x-full flex-col bg-white transition-transform lg:translate-x-0 lg:shadow-[4px_0_24px_rgba(0,0,0,0.12)]"
-    :class="sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'"
-    aria-label="Barre latérale">
+    :class="sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'" aria-label="Barre latérale">
 
     {{-- Brand --}}
     <div class="flex h-[72px] shrink-0 items-center gap-3 px-5">
@@ -35,8 +34,8 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
             <div class="flex flex-col gap-1">
                 <a href="{{ route('dashboard') }}"
                     class="{{ $linkBase }} {{ $isActive('dashboard') ? $linkActive : $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <path d="M3 11l9-8 9 8" />
                         <path d="M5 10v10h14V10" />
                         <path d="M9 20v-6h6v6" />
@@ -45,8 +44,8 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
@@ -54,18 +53,18 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <circle cx="9" cy="21" r="1" />
                         <circle cx="20" cy="21" r="1" />
                         <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L22 6H6" />
                     </svg>
-                    <span>Ventes &amp; Points</span>
+                    <span>Ventes &amp; Prestations</span>
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <path d="M20 12v10H4V12" />
                         <path d="M2 7h20v5H2z" />
                         <path d="M12 22V7" />
@@ -76,19 +75,19 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
                         <path d="M13.7 21a2 2 0 0 1-3.4 0" />
                     </svg>
                     <span class="flex-1">Notifications</span>
                     <span
-                        class="grid h-5 min-w-[20px] place-items-center rounded-full bg-pcc-yellow px-1.5 text-[10px] font-black leading-none text-[#101820]">8</span>
+                        class="grid h-5 min-w-[20px] place-items-center rounded-full bg-pcc-yellow px-1.5 text-[10px] font-black leading-none text-[#101820]">1</span>
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <path d="M3 3v18h18" />
                         <rect x="7" y="12" width="3" height="6" />
                         <rect x="12" y="8" width="3" height="10" />
@@ -103,8 +102,8 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
             <p class="px-4 pb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Général</p>
             <div class="flex flex-col gap-1">
                 <a href="{{ route('profile.show') }}" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <circle cx="12" cy="12" r="3" />
                         <path
                             d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 1 1 0 4H21a1.7 1.7 0 0 0-1.6 1z" />
@@ -113,8 +112,8 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
                 </a>
 
                 <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                        stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M9.1 9a3 3 0 1 1 5.8 1c0 2-3 2-3 4" />
                         <path d="M12 17h.01" />
@@ -127,7 +126,8 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
                     <button type="button" @click="$root.submit();"
                         class="{{ $linkBase }} {{ $linkIdle }} w-full text-left">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                            stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]" aria-hidden="true">
+                            stroke-linecap="round" stroke-linejoin="round" class="h-[18px] w-[18px]"
+                            aria-hidden="true">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                             <path d="m16 17 5-5-5-5" />
                             <path d="M21 12H9" />
@@ -138,4 +138,26 @@ $linkActive = 'bg-pcc-yellow/15 text-[#101820] shadow-[inset_0_0_0_1px_rgba(255,
             </div>
         </div>
     </nav>
+
+    {{-- Help card --}}
+    <div class="mx-4 mb-4 rounded-2xl bg-pcc-yellow/10 p-4 border border-pcc-yellow/20">
+        <div class="flex items-center gap-3 mb-3">
+            <div class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pcc-yellow shadow-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 text-[#101820]">
+                    <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+                    <path d="M21 19a2 2 0 0 1-2 2h-1v-7h3v5z" />
+                    <path d="M3 19a2 2 0 0 0 2 2h1v-7H3v5z" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-[12px] font-bold text-slate-800">Besoin d'aide ?</p>
+                <p class="text-[11px] text-slate-500 leading-snug">Notre équipe est là pour vous accompagner.</p>
+            </div>
+        </div>
+        <a href="#"
+            class="flex w-full items-center justify-center rounded-xl bg-pcc-yellow py-2 text-[12px] font-black text-[#101820] shadow-sm hover:opacity-90 transition-opacity">
+            Contacter le support
+        </a>
+    </div>
 </aside>
