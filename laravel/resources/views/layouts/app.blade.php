@@ -22,23 +22,16 @@
     @livewireStyles
 </head>
 
-<body class="font-sans antialiased bg-[#E8EAED] text-[#1d1f23]">
+<body class="font-sans antialiased text-[#1d1f23]" style="background-color: #9e999924;">
     <x-banner />
 
-    <div x-data="{ sidebarOpen: false }" class="flex min-h-screen">
+    <div x-data="{ mobileMenuOpen: false }" class="min-h-screen">
 
-        {{-- Sidebar (Livewire) --}}
+        {{-- Topnav (Livewire) --}}
         @livewire('navigation-menu')
 
-        {{-- Mobile sidebar backdrop --}}
-        <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
-            class="fixed inset-0 z-30 bg-slate-900/40 lg:hidden"></div>
-
         {{-- Main column --}}
-        <div class="flex min-w-0 flex-1 flex-col lg:ml-[240px]">
-
-            {{-- Topbar --}}
-            @include('partials.topbar')
+        <div class="flex flex-col">
 
             {{-- Page Heading (optional slot) --}}
             @if (isset($header))
@@ -51,6 +44,16 @@
             <main class="flex-1 px-4 py-6 sm:px-6 lg:px-8">
                 {{ $slot }}
             </main>
+
+            <!-- Footer -->
+            <footer class="mt-auto px-4 py-4 sm:px-6 lg:px-8">
+                <div
+                    class="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/60 pt-4 text-[11.5px] text-slate-400">
+                    <span>&copy; {{ date('Y') }} <strong class="font-semibold text-slate-500">PCC Fidélité</strong>.
+                        Tous droits réservés.</span>
+                    <span>v1.0.0</span>
+                </div>
+            </footer>
         </div>
     </div>
 

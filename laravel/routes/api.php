@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+require __DIR__ . '/api_routes/user.php';
+require __DIR__ . '/api_routes/client-registration.php';
+require __DIR__ . '/api_routes/client-auth.php';
