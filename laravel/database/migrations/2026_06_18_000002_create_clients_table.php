@@ -28,6 +28,9 @@ return new class extends Migration
             // Points balance (denormalized for fast reads)
             $table->decimal('points_balance', 12, 2)->default(0);
 
+            $table->timestamp('accepted_at')->nullable();
+            $table->foreignId('accepted_by')->nullable()->constrained('users')->nullOnDelete();
+
             $table->timestamps();
 
             $table->index('pcc_customer_code');
