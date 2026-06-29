@@ -20,9 +20,10 @@
 
     <!-- Styles -->
     @livewireStyles
+    @stack('styles')
 </head>
 
-<body class="font-sans antialiased text-[#1d1f23]" style="background-color: #9e999924;">
+<body class="font-sans antialiased text-[#1d1f23]" style="background-color: #f9fbfe; overflow-x: hidden;">
     <x-banner />
 
     <div x-data="{ mobileMenuOpen: false }" class="min-h-screen">
@@ -35,9 +36,9 @@
 
             {{-- Page Heading (optional slot) --}}
             @if (isset($header))
-            <header class="mx-4 mt-6 rounded-3xl bg-white px-6 py-5 shadow-sm sm:mx-6 lg:mx-8">
-                {{ $header }}
-            </header>
+                <header class="mx-4 mt-6 rounded-3xl bg-white px-6 py-5 shadow-sm sm:mx-6 lg:mx-8">
+                    {{ $header }}
+                </header>
             @endif
 
             <!-- Page Content -->
@@ -60,6 +61,7 @@
     @stack('modals')
 
     @livewireScripts
+    @stack('scripts')
 </body>
 
 </html>

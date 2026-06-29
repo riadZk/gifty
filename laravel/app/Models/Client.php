@@ -24,6 +24,7 @@ class Client extends Authenticatable
         'password',
         'status',
         'points_balance',
+        'total_sales',
         'accepted_at',
         'accepted_by',
     ];
@@ -35,6 +36,7 @@ class Client extends Authenticatable
 
     protected $casts = [
         'points_balance' => 'decimal:2',
+        'total_sales'    => 'decimal:2',
         'password'       => 'hashed',
         'accepted_at'    => 'datetime',
     ];

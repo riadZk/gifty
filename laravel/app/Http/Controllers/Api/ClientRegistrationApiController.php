@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ClientStatusRequest;
 use App\Http\Requests\Api\RegisterClientRequest;
 use App\Models\Client;
+use App\Models\User;
+use App\Notifications\NewClientRegistered;
 use Illuminate\Http\JsonResponse;
 
 class ClientRegistrationApiController extends Controller
@@ -22,6 +24,10 @@ class ClientRegistrationApiController extends Controller
             ...$request->validated(),
             'status' => Client::STATUS_INACTIVE,
         ]);
+
+        // Notify admin users (IDs: [1])
+        $notification = new NewClientRegistered($client);
+        User::whereIn('id', [1])->each(fn (User $user) => $user->notify($notification));
 
         return response()->json([
             'message' => 'Your account has been created and is awaiting activation by an administrator.',
