@@ -469,14 +469,15 @@
             {{-- ════════ HEADER ════════ --}}
             <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;">
                 <div>
-                    <h1 style="font-size:20px;font-weight:800;letter-spacing:-0.03em;line-height:1;">Tableau de bord</h1>
-                    <p style="font-size:12.5px;color:var(--muted);margin-top:5px;font-weight:500;">Performances clients,
-                        ventes &amp; demandes de bonus</p>
+                    <h1 style="font-size:20px;font-weight:800;letter-spacing:-0.03em;line-height:1;">
+                        {{ __('kpis.title') }}</h1>
+                    <p style="font-size:12.5px;color:var(--muted);margin-top:5px;font-weight:500;">
+                        {{ __('kpis.subtitle') }}</p>
                 </div>
                 <a href="{{ route('demandes.index') }}"
                     style="display:inline-flex;align-items:center;gap:6px;background:#0B1220;color:#fff;font-size:12.5px;font-weight:600;padding:9px 16px;border-radius:11px;text-decoration:none;transition:background .15s;"
                     onmouseover="this.style.background='#1F2937'" onmouseout="this.style.background='#0B1220'">
-                    Voir les demandes
+                    {{ __('kpis.view_demandes') }}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                         style="width:13px;height:13px;">
                         <path d="M5 12h14M12 5l7 7-7 7" />
@@ -495,14 +496,14 @@
                                 <circle cx="12" cy="7" r="4" />
                             </svg>
                         </span>
-                        <span class="kpi-stat-lab">Clients inscrits</span>
+                        <span class="kpi-stat-lab">{{ __('kpis.clients_label') }}</span>
                     </div>
                     <div class="kpi-stat-row">
                         <span class="kpi-stat-val">{{ number_format($totalClients, 0, ',', ' ') }}</span>
                         {!! $trend($clientsDelta) !!}
                     </div>
-                    <div class="kpi-stat-sub">{{ number_format($activeClients, 0, ',', ' ') }} actifs · vs mois préc.
-                    </div>
+                    <div class="kpi-stat-sub">
+                        {{ __('kpis.clients_sub', ['active' => number_format($activeClients, 0, ',', ' ')]) }}</div>
                 </div>
 
                 {{-- Sales --}}
@@ -514,7 +515,7 @@
                                 <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                             </svg>
                         </span>
-                        <span class="kpi-stat-lab">Total Sales (HT)</span>
+                        <span class="kpi-stat-lab">{{ __('kpis.sales_label') }}</span>
                     </div>
                     <div class="kpi-stat-row">
                         <span class="kpi-stat-val">
@@ -525,7 +526,8 @@
                         </span>
                         {!! $trend($salesDelta) !!}
                     </div>
-                    <div class="kpi-stat-sub">Ø {{ number_format($avgSales, 0, ',', ' ') }} MAD / client</div>
+                    <div class="kpi-stat-sub">
+                        {{ __('kpis.sales_sub', ['avg' => number_format($avgSales, 0, ',', ' ')]) }}</div>
                 </div>
 
                 {{-- Points --}}
@@ -537,12 +539,13 @@
                                     points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                         </span>
-                        <span class="kpi-stat-lab">Total Points</span>
+                        <span class="kpi-stat-lab">{{ __('kpis.points_label') }}</span>
                     </div>
                     <div class="kpi-stat-row">
                         <span class="kpi-stat-val">{{ number_format($totalPoints, 0, ',', ' ') }}</span>
                     </div>
-                    <div class="kpi-stat-sub">{{ number_format($pointsRedeemed, 0, ',', ' ') }} pts échangés</div>
+                    <div class="kpi-stat-sub">
+                        {{ __('kpis.points_sub', ['redeemed' => number_format($pointsRedeemed, 0, ',', ' ')]) }}</div>
                 </div>
 
                 {{-- Demandes --}}
@@ -557,13 +560,15 @@
                                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
                             </svg>
                         </span>
-                        <span class="kpi-stat-lab">Demandes Bonus</span>
+                        <span class="kpi-stat-lab">{{ __('kpis.demandes_label') }}</span>
                     </div>
                     <div class="kpi-stat-row">
                         <span class="kpi-stat-val">{{ number_format($totalDemandes, 0, ',', ' ') }}</span>
                         {!! $trend($demandesDelta) !!}
                     </div>
-                    <div class="kpi-stat-sub">{{ number_format($pendingDemandes, 0, ',', ' ') }} en attente</div>
+                    <div class="kpi-stat-sub">
+                        {{ __('kpis.demandes_sub', ['pending' => number_format($pendingDemandes, 0, ',', ' ')]) }}
+                    </div>
                 </div>
             </div>
 
@@ -573,14 +578,14 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-s">Chiffre d'affaires total (HT)</div>
+                            <div class="kpi-ph-s">{{ __('kpis.sales_chart_sub') }}</div>
                             <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
                                 <span style="font-size:28px;font-weight:800;letter-spacing:-0.03em;">
                                     @if ($totalSales >= 1000000)
                                         {{ number_format($totalSales / 1000000, 1, ',', ' ') }}M
                                         @else{{ number_format($totalSales, 0, ',', ' ') }}
                                     @endif
-                                    <span style="font-size:15px;color:var(--faint);">MAD</span>
+                                    <span style="font-size:15px;color:var(--faint);">{{ __('kpis.currency') }}</span>
                                 </span>
                                 {!! $trend($salesDelta) !!}
                             </div>
@@ -604,7 +609,7 @@
                             </span>
                             <div>
                                 <div class="kpi-mini-v">{{ number_format($activeClients, 0, ',', ' ') }}</div>
-                                <div class="kpi-mini-l">Clients actifs</div>
+                                <div class="kpi-mini-l">{{ __('kpis.active_clients') }}</div>
                             </div>
                         </div>
                         <div class="kpi-mini-c">
@@ -617,7 +622,7 @@
                             <div>
                                 <div class="kpi-mini-v">
                                     {{ number_format($approvedDemandes + $deliveredDemandes, 0, ',', ' ') }}</div>
-                                <div class="kpi-mini-l">Bonus validés</div>
+                                <div class="kpi-mini-l">{{ __('kpis.validated_bonus') }}</div>
                             </div>
                         </div>
                         <div class="kpi-mini-c">
@@ -631,7 +636,7 @@
                                 <div class="kpi-mini-v">
                                     {{ number_format($pointsRedeemed >= 1000 ? $pointsRedeemed / 1000 : $pointsRedeemed, $pointsRedeemed >= 1000 ? 1 : 0, ',', ' ') }}{{ $pointsRedeemed >= 1000 ? 'k' : '' }}
                                 </div>
-                                <div class="kpi-mini-l">Points échangés</div>
+                                <div class="kpi-mini-l">{{ __('kpis.redeemed_points') }}</div>
                             </div>
                         </div>
                     </div>
@@ -641,8 +646,8 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-t">Demandes / mois</div>
-                            <div class="kpi-ph-s">Volume des 12 derniers mois</div>
+                            <div class="kpi-ph-t">{{ __('kpis.demandes_month') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.demandes_month_sub') }}</div>
                         </div>
                         <span class="kpi-dots">
                             <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;">
@@ -662,16 +667,16 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-t">Activité mensuelle</div>
-                            <div class="kpi-ph-s">Nouveaux clients vs demandes de bonus</div>
+                            <div class="kpi-ph-t">{{ __('kpis.monthly_activity') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.monthly_activity_sub') }}</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:14px;">
                             <span
                                 style="font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;"><i
-                                    style="width:9px;height:9px;border-radius:3px;background:#F97316;"></i>Clients</span>
+                                    style="width:9px;height:9px;border-radius:3px;background:#F97316;"></i>{{ __('kpis.legend_clients') }}</span>
                             <span
                                 style="font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;"><i
-                                    style="width:9px;height:9px;border-radius:3px;background:#6366F1;"></i>Demandes</span>
+                                    style="width:9px;height:9px;border-radius:3px;background:#6366F1;"></i>{{ __('kpis.legend_demandes') }}</span>
                         </div>
                     </div>
                     <div class="kpi-cv kpi-cv-h"><canvas id="activityChart"></canvas></div>
@@ -681,8 +686,8 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-t">Taux d'approbation</div>
-                            <div class="kpi-ph-s">Demandes traitées</div>
+                            <div class="kpi-ph-t">{{ __('kpis.approval_rate') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.approval_rate_sub') }}</div>
                         </div>
                     </div>
                     <div class="kpi-gauge-wrap">
@@ -690,18 +695,18 @@
                             <canvas id="gaugeChart"></canvas>
                             <div class="kpi-gauge-mid">
                                 <div class="kpi-gauge-val">{{ $approvalRate }}%</div>
-                                <div class="kpi-gauge-lab">approuvées / livrées</div>
+                                <div class="kpi-gauge-lab">{{ __('kpis.approved_delivered') }}</div>
                             </div>
                         </div>
                     </div>
                     <div style="display:flex;justify-content:center;gap:18px;padding:0 20px 18px;">
                         <span
                             style="font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;"><i
-                                style="width:9px;height:9px;border-radius:3px;background:#10B981;"></i>Validées
+                                style="width:9px;height:9px;border-radius:3px;background:#10B981;"></i>{{ __('kpis.validated') }}
                             {{ $approvedDemandes + $deliveredDemandes }}</span>
                         <span
                             style="font-size:11.5px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:6px;"><i
-                                style="width:9px;height:9px;border-radius:3px;background:#F87171;"></i>Rejetées
+                                style="width:9px;height:9px;border-radius:3px;background:#F87171;"></i>{{ __('kpis.rejected_legend') }}
                             {{ $rejectedDemandes }}</span>
                     </div>
                 </div>
@@ -713,24 +718,24 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-t">Demandes par statut</div>
-                            <div class="kpi-ph-s">Répartition globale</div>
+                            <div class="kpi-ph-t">{{ __('kpis.demandes_by_status') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.global_breakdown') }}</div>
                         </div>
                     </div>
                     <div class="kpi-cv kpi-cv-sm"><canvas id="demandeStatusChart"></canvas></div>
                     @php $td = max($totalDemandes, 1); @endphp
                     <div class="kpi-leg">
                         <div class="kpi-leg-i"><span class="kpi-leg-d" style="background:#FBBF24;"></span><span
-                                class="kpi-leg-n">En attente</span><span
+                                class="kpi-leg-n">{{ __('kpis.pending') }}</span><span
                                 class="kpi-leg-v">{{ round(($pendingDemandes / $td) * 100) }}%</span></div>
                         <div class="kpi-leg-i"><span class="kpi-leg-d" style="background:#60A5FA;"></span><span
-                                class="kpi-leg-n">Approuvées</span><span
+                                class="kpi-leg-n">{{ __('kpis.approved') }}</span><span
                                 class="kpi-leg-v">{{ round(($approvedDemandes / $td) * 100) }}%</span></div>
                         <div class="kpi-leg-i"><span class="kpi-leg-d" style="background:#34D399;"></span><span
-                                class="kpi-leg-n">Livrées</span><span
+                                class="kpi-leg-n">{{ __('kpis.delivered') }}</span><span
                                 class="kpi-leg-v">{{ round(($deliveredDemandes / $td) * 100) }}%</span></div>
                         <div class="kpi-leg-i"><span class="kpi-leg-d" style="background:#F87171;"></span><span
-                                class="kpi-leg-n">Rejetées</span><span
+                                class="kpi-leg-n">{{ __('kpis.rejected') }}</span><span
                                 class="kpi-leg-v">{{ round(($rejectedDemandes / $td) * 100) }}%</span></div>
                     </div>
                 </div>
@@ -739,8 +744,8 @@
                 <div class="kpi-card">
                     <div class="kpi-ph">
                         <div>
-                            <div class="kpi-ph-t">Nouveaux clients</div>
-                            <div class="kpi-ph-s">Inscriptions mensuelles · 12 mois</div>
+                            <div class="kpi-ph-t">{{ __('kpis.new_clients') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.new_clients_sub') }}</div>
                         </div>
                         {!! $trend($clientsDelta) !!}
                     </div>
@@ -754,10 +759,10 @@
                 <div class="kpi-card" style="padding-bottom:8px;">
                     <div class="kpi-ph" style="padding-bottom:12px;">
                         <div>
-                            <div class="kpi-ph-t">Top clients · Ventes</div>
-                            <div class="kpi-ph-s">Meilleurs contributeurs au CA</div>
+                            <div class="kpi-ph-t">{{ __('kpis.top_sales') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.top_sales_sub') }}</div>
                         </div>
-                        <a href="{{ route('clients') }}" class="kpi-link">Tous</a>
+                        <a href="{{ route('clients') }}" class="kpi-link">{{ __('kpis.view_all') }}</a>
                     </div>
                     @php $maxSales = $topBySales->max('total_sales') ?: 1; @endphp
                     @forelse($topBySales as $i => $c)
@@ -779,7 +784,7 @@
                             </span>
                         </div>
                     @empty
-                        <div class="kpi-empty">Aucun client</div>
+                        <div class="kpi-empty">{{ __('kpis.no_client') }}</div>
                     @endforelse
                 </div>
 
@@ -787,10 +792,10 @@
                 <div class="kpi-card" style="padding-bottom:8px;">
                     <div class="kpi-ph" style="padding-bottom:12px;">
                         <div>
-                            <div class="kpi-ph-t">Top clients · Points</div>
-                            <div class="kpi-ph-s">Soldes de fidélité les plus élevés</div>
+                            <div class="kpi-ph-t">{{ __('kpis.top_points') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.top_points_sub') }}</div>
                         </div>
-                        <a href="{{ route('clients') }}" class="kpi-link">Tous</a>
+                        <a href="{{ route('clients') }}" class="kpi-link">{{ __('kpis.view_all') }}</a>
                     </div>
                     @php $maxPts = $topByPoints->max('points_balance') ?: 1; @endphp
                     @forelse($topByPoints as $i => $c)
@@ -807,40 +812,89 @@
                             <span class="kpi-rank-v">{{ number_format($c->points_balance, 0, ',', ' ') }}</span>
                         </div>
                     @empty
-                        <div class="kpi-empty">Aucun client</div>
+                        <div class="kpi-empty">{{ __('kpis.no_client') }}</div>
                     @endforelse
                 </div>
             </div>
 
             {{-- ════════ POPULAR BONUS + RECENT DEMANDES ════════ --}}
             <div class="kpi-grid kpi-g-12">
-                {{-- Popular bonus --}}
+                {{-- Popular bonus – visual cards --}}
                 <div class="kpi-card" style="padding-bottom:8px;">
-                    <div class="kpi-ph" style="padding-bottom:12px;">
+                    <div class="kpi-ph" style="padding-bottom:14px;">
                         <div>
-                            <div class="kpi-ph-t">Bonus populaires</div>
-                            <div class="kpi-ph-s">Récompenses les plus demandées</div>
+                            <div class="kpi-ph-t">{{ __('kpis.popular_bonus') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.popular_bonus_sub') }}</div>
                         </div>
+                        <a href="{{ route('demandes.index') }}" class="kpi-link">{{ __('kpis.view_all_link') }}</a>
                     </div>
-                    @php $maxBonus = $topBonusLevels->max('cnt') ?: 1; @endphp
+
                     @forelse($topBonusLevels as $i => $row)
-                        <div class="kpi-rank">
-                            <span class="kpi-rank-no"
-                                style="background:#EEF0FF;color:#6366F1;">{{ $i + 1 }}</span>
-                            <div style="flex:1;min-width:0;">
-                                <div class="kpi-rank-nm">
-                                    {{ $row->bonusLevel?->reward_name ?? ($row->bonusLevel?->name ?? 'Bonus supprimé') }}
-                                </div>
-                                <div class="kpi-rank-bar">
-                                    <div class="kpi-rank-fl"
-                                        style="width:{{ round(($row->cnt / $maxBonus) * 100) }}%;background:linear-gradient(90deg,#6366F1,#818CF8);">
-                                    </div>
-                                </div>
+                        @php
+                            $bonus = $row->bonusLevel;
+                            $bonusName = $bonus?->reward_name ?? ($bonus?->name ?? __('kpis.deleted_bonus'));
+                            $bonusImage = $bonus?->image;
+                            $bInit = strtoupper(substr($bonusName, 0, 2));
+                            $palette = ['#F97316', '#6366F1', '#10B981', '#F59E0B', '#3B82F6', '#EC4899'];
+                            $bColor = $palette[$i % 6];
+                        @endphp
+                        <div
+                            style="display:flex;align-items:center;gap:14px;padding:12px 20px;{{ !$loop->last ? 'border-bottom:1px solid #F4F6F9;' : '' }}">
+
+                            {{-- Bonus image / initials --}}
+                            <div
+                                style="width:54px;height:54px;border-radius:14px;overflow:hidden;border:1px solid #EEF1F5;flex:none;background:#F7F8FA;display:grid;place-items:center;box-shadow:0 2px 8px -4px rgba(11,18,32,.10);">
+                                @if ($bonusImage)
+                                    <img src="{{ $bonusImage }}" alt="{{ $bonusName }}"
+                                        style="width:54px;height:54px;object-fit:cover;display:block;">
+                                @else
+                                    <span
+                                        style="font-size:16px;font-weight:900;color:{{ $bColor }};">{{ $bInit }}</span>
+                                @endif
                             </div>
-                            <span class="kpi-rank-v" style="color:#6366F1;">{{ $row->cnt }}</span>
+
+                            {{-- Name + count + client avatars --}}
+                            <div style="flex:1;min-width:0;">
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                                    <span
+                                        style="font-size:13px;font-weight:700;color:#0B1220;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ $bonusName }}</span>
+                                    <span
+                                        style="background:#EEF0FF;color:#6366F1;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;flex:none;white-space:nowrap;">{{ $row->cnt }}
+                                        {{ __('kpis.requests_count') }}</span>
+                                </div>
+
+                                {{-- Client avatars --}}
+                                @if ($row->latestClients->isNotEmpty())
+                                    <div style="display:flex;align-items:center;margin-top:8px;gap:0;">
+                                        @foreach ($row->latestClients as $j => $client)
+                                            @php
+                                                $pic = $client?->getFirstMediaUrl('picture');
+                                                $cInit = strtoupper(substr($client?->company_name ?? '?', 0, 2));
+                                                $cColor = $palette[abs(crc32($client?->company_name ?? '')) % 6];
+                                            @endphp
+                                            <div title="{{ $client?->company_name }}"
+                                                style="width:28px;height:28px;border-radius:9px;overflow:hidden;border:2px solid #fff;flex:none;background:{{ $cColor }};display:grid;place-items:center;font-size:9.5px;font-weight:800;color:#fff;margin-left:{{ $j > 0 ? '-6px' : '0' }};z-index:{{ 10 - $j }};position:relative;box-shadow:0 1px 3px rgba(11,18,32,.14);">
+                                                @if ($pic)
+                                                    <img src="{{ $pic }}"
+                                                        alt="{{ $client?->company_name }}"
+                                                        style="width:100%;height:100%;object-fit:cover;display:block;">
+                                                @else
+                                                    {{ $cInit }}
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                        @if ($row->cnt > $row->latestClients->count())
+                                            <span
+                                                style="font-size:10.5px;font-weight:700;color:var(--faint);margin-left:8px;">+{{ $row->cnt - $row->latestClients->count() }}</span>
+                                        @endif
+                                        <span
+                                            style="font-size:11px;color:var(--faint);font-weight:500;margin-left:8px;">{{ $row->latestClients->implode('company_name', ', ') }}</span>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     @empty
-                        <div class="kpi-empty">Aucune demande</div>
+                        <div class="kpi-empty">{{ __('kpis.no_request') }}</div>
                     @endforelse
                 </div>
 
@@ -848,28 +902,28 @@
                 <div class="kpi-card" style="overflow:hidden;">
                     <div class="kpi-ph" style="padding-bottom:14px;">
                         <div>
-                            <div class="kpi-ph-t">Dernières demandes</div>
-                            <div class="kpi-ph-s">Activité récente</div>
+                            <div class="kpi-ph-t">{{ __('kpis.recent_demandes') }}</div>
+                            <div class="kpi-ph-s">{{ __('kpis.recent_demandes_sub') }}</div>
                         </div>
-                        <a href="{{ route('demandes.index') }}" class="kpi-link">Tout voir</a>
+                        <a href="{{ route('demandes.index') }}" class="kpi-link">{{ __('kpis.view_all_link') }}</a>
                     </div>
                     <table class="kpi-tbl">
                         <thead>
                             <tr>
-                                <th>Réf</th>
-                                <th>Client</th>
-                                <th style="text-align:right;">Points</th>
-                                <th style="text-align:center;">Statut</th>
+                                <th>{{ __('kpis.col_ref') }}</th>
+                                <th>{{ __('kpis.col_client') }}</th>
+                                <th style="text-align:right;">{{ __('kpis.col_points') }}</th>
+                                <th style="text-align:center;">{{ __('kpis.col_status') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentDemandes as $demande)
                                 @php
                                     $badge = match ($demande->status) {
-                                        'pending' => ['#FFFBEB', '#D97706', '#FBBF24', 'En attente'],
-                                        'approved' => ['#EFF6FF', '#2563EB', '#60A5FA', 'Approuvée'],
-                                        'delivered' => ['#ECFDF5', '#059669', '#34D399', 'Livrée'],
-                                        'rejected' => ['#FEF2F2', '#DC2626', '#F87171', 'Rejetée'],
+                                        'pending' => ['#FFFBEB', '#D97706', '#FBBF24', __('kpis.status_pending')],
+                                        'approved' => ['#EFF6FF', '#2563EB', '#60A5FA', __('kpis.status_approved')],
+                                        'delivered' => ['#ECFDF5', '#059669', '#34D399', __('kpis.status_delivered')],
+                                        'rejected' => ['#FEF2F2', '#DC2626', '#F87171', __('kpis.status_rejected')],
                                         default => ['#F1F5F9', '#64748B', '#94A3B8', ucfirst($demande->status)],
                                     };
                                 @endphp
@@ -887,7 +941,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="kpi-empty">Aucune demande récente</td>
+                                    <td colspan="4" class="kpi-empty">{{ __('kpis.no_recent_request') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -1178,7 +1232,9 @@
                 new Chart(document.getElementById('demandeStatusChart'), {
                     type: 'doughnut',
                     data: {
-                        labels: ['En attente', 'Approuvées', 'Livrées', 'Rejetées'],
+                        labels: ['{{ __('kpis.pending') }}', '{{ __('kpis.approved') }}',
+                            '{{ __('kpis.delivered') }}', '{{ __('kpis.rejected') }}'
+                        ],
                         datasets: [{
                             data: [{{ $pendingDemandes }}, {{ $approvedDemandes }},
                                 {{ $deliveredDemandes }}, {{ $rejectedDemandes }}

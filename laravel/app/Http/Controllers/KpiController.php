@@ -86,13 +86,23 @@ class KpiController extends Controller
             ->take(8)
             ->get(['company_name', 'points_balance']);
 
-        // ── Most requested bonus levels ───────────────────────────────────────
+        // ── Most requested bonus levels (with last 4 requesting clients) ──────
         $topBonusLevels = BonusRequest::selectRaw('bonus_level_id, COUNT(*) as cnt')
-            ->with('bonusLevel:id,reward_name,name')
+            ->with('bonusLevel:id,reward_name,name,image')
             ->groupBy('bonus_level_id')
             ->orderByDesc('cnt')
             ->take(6)
-            ->get();
+            ->get()
+            ->each(function ($row) {
+                // Load the last 4 distinct clients who requested this bonus
+                $row->latestClients = BonusRequest::where('bonus_level_id', $row->bonus_level_id)
+                    ->with('client:id,company_name')
+                    ->latest('requested_at')
+                    ->get()
+                    ->unique('client_id')
+                    ->take(4)
+                    ->pluck('client');
+            });
 
         // ── Recent bonus requests ─────────────────────────────────────────────
         $recentDemandes = BonusRequest::with(['client:id,company_name', 'bonusLevel:id,reward_name'])
@@ -133,14 +143,30 @@ class KpiController extends Controller
             : 0;
 
         return view('content.kpis.index', compact(
-            'totalClients', 'totalSales', 'totalPoints', 'activeClients', 'avgSales',
-            'totalDemandes', 'pendingDemandes', 'approvedDemandes', 'rejectedDemandes',
-            'deliveredDemandes', 'pointsRedeemed',
+            'totalClients',
+            'totalSales',
+            'totalPoints',
+            'activeClients',
+            'avgSales',
+            'totalDemandes',
+            'pendingDemandes',
+            'approvedDemandes',
+            'rejectedDemandes',
+            'deliveredDemandes',
+            'pointsRedeemed',
             'monthLabels',
-            'clientsPerMonth', 'salesPerMonth', 'demandesPerMonth',
-            'topBySales', 'topByPoints', 'topBonusLevels', 'recentDemandes',
+            'clientsPerMonth',
+            'salesPerMonth',
+            'demandesPerMonth',
+            'topBySales',
+            'topByPoints',
+            'topBonusLevels',
+            'recentDemandes',
             'demandeStatus',
-            'clientsDelta', 'salesDelta', 'demandesDelta', 'approvalRate'
+            'clientsDelta',
+            'salesDelta',
+            'demandesDelta',
+            'approvalRate'
         ));
     }
 }

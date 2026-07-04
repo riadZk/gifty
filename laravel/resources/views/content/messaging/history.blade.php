@@ -438,7 +438,235 @@
         .n-muted {
             color: #cbd5e1;
         }
+
+        /* ── Row action buttons ── */
+        .pcc-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            height: 100%;
+        }
+
+        .pcc-abtn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            height: 32px;
+            padding: 0 11px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            transition: all .15s;
+        }
+
+        .pcc-abtn:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .pcc-abtn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .pcc-abtn.resend {
+            background: #fff7ed;
+            border-color: #fed7aa;
+            color: #c2410c;
+        }
+
+        .pcc-abtn.resend:hover {
+            background: #ffedd5;
+            border-color: #fdba74;
+        }
+
+        /* ── Detail modal ── */
+        .pcc-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 60;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+            background: rgba(15, 23, 42, .45);
+            backdrop-filter: blur(2px);
+            overflow-y: auto;
+        }
+
+        .pcc-modal-overlay.open {
+            display: flex;
+        }
+
+        .pcc-modal {
+            width: 100%;
+            max-width: 760px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 60px -20px rgba(15, 23, 42, .5);
+            overflow: hidden;
+            animation: pccModalIn .18s ease-out;
+        }
+
+        @keyframes pccModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .pcc-modal-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 20px 22px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .pcc-modal-head h3 {
+            font-size: 17px;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: -.01em;
+        }
+
+        .pcc-modal-head .sub {
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .pcc-modal-close {
+            display: grid;
+            place-items: center;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #64748b;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .pcc-modal-close:hover {
+            background: #f8fafc;
+        }
+
+        .pcc-modal-body {
+            padding: 20px 22px;
+            max-height: 62vh;
+            overflow-y: auto;
+        }
+
+        .pcc-detail-msg {
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+        }
+
+        .pcc-detail-msg .t {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .pcc-detail-msg .b {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 6px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .pcc-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .pcc-detail-meta .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #64748b;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 999px;
+            padding: 4px 10px;
+        }
+
+        .pcc-rtable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        .pcc-rtable th {
+            text-align: left;
+            font-size: 10.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            color: #94a3b8;
+            padding: 8px 10px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .pcc-rtable td {
+            padding: 10px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+
+        .pcc-rtable .r-name {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .pcc-rtable .r-contact {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        .pcc-rtable .r-err {
+            font-size: 11px;
+            color: #b91c1c;
+        }
+
+        .pcc-badge.b-pending {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .pcc-modal-foot {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 16px 22px;
+            border-top: 1px solid #eef2f7;
+            background: #fcfcfd;
+        }
     </style>
+
 
     <div class="flex flex-col gap-6">
 
@@ -446,14 +674,15 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div class="flex flex-col gap-1">
                 <nav class="flex items-center gap-1.5 text-[11.5px] font-semibold text-slate-400">
-                    <span>Communication</span>
+                    <span>{{ __('messaging.breadcrumb_communication') }}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
-                    <span class="text-slate-700">Historique des messages</span>
+                    <span class="text-slate-700">{{ __('messaging.history_breadcrumb') }}</span>
                 </nav>
-                <h1 class="text-[26px] font-black tracking-tight text-slate-900">Historique des messages</h1>
-                <p class="text-[13px] text-slate-500">Suivez tous les messages envoyés, leurs canaux et leur livraison.
+                <h1 class="text-[26px] font-black tracking-tight text-slate-900">{{ __('messaging.history_title') }}
+                </h1>
+                <p class="text-[13px] text-slate-500">{{ __('messaging.history_subtitle') }}
                 </p>
             </div>
             <a href="{{ route('messaging.index') }}"
@@ -462,7 +691,7 @@
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
-                Nouveau message
+                {{ __('messaging.btn_new_message') }}
             </a>
         </div>
 
@@ -475,7 +704,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['total']) }}</div>
-                    <div class="lab">Messages envoyés</div>
+                    <div class="lab">{{ __('messaging.stat_messages_sent') }}</div>
                 </div>
             </div>
             <div class="m-stat s-green">
@@ -486,7 +715,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['delivered']) }}</div>
-                    <div class="lab">Livraisons réussies</div>
+                    <div class="lab">{{ __('messaging.stat_delivered') }}</div>
                 </div>
             </div>
             <div class="m-stat s-amber">
@@ -499,7 +728,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['partial']) }}</div>
-                    <div class="lab">Partiellement livrés</div>
+                    <div class="lab">{{ __('messaging.stat_partial') }}</div>
                 </div>
             </div>
             <div class="m-stat s-red">
@@ -511,7 +740,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['failed']) }}</div>
-                    <div class="lab">Échecs</div>
+                    <div class="lab">{{ __('messaging.stat_failed') }}</div>
                 </div>
             </div>
         </div>
@@ -521,12 +750,12 @@
             <div class="m-card">
                 <div class="m-card-head">
                     <div>
-                        <div class="m-card-title">Activité des 14 derniers jours</div>
-                        <div class="m-card-sub">Livraisons réussies et échecs par jour</div>
+                        <div class="m-card-title">{{ __('messaging.chart_trend_title') }}</div>
+                        <div class="m-card-sub">{{ __('messaging.chart_trend_sub') }}</div>
                     </div>
                     <div class="m-legend">
-                        <span><i style="background:#10b981"></i>Livrés</span>
-                        <span><i style="background:#ef4444"></i>Échecs</span>
+                        <span><i style="background:#10b981"></i>{{ __('messaging.legend_delivered') }}</span>
+                        <span><i style="background:#ef4444"></i>{{ __('messaging.legend_failed') }}</span>
                     </div>
                 </div>
                 <div class="m-chart-wrap">
@@ -536,8 +765,8 @@
             <div class="m-card">
                 <div class="m-card-head">
                     <div>
-                        <div class="m-card-title">Répartition par canal</div>
-                        <div class="m-card-sub">Messages utilisant chaque canal</div>
+                        <div class="m-card-title">{{ __('messaging.chart_channels_title') }}</div>
+                        <div class="m-card-sub">{{ __('messaging.chart_channels_sub') }}</div>
                     </div>
                 </div>
                 <div class="m-chart-wrap">
@@ -550,8 +779,8 @@
         <div>
             <div class="panel-head">
                 <div>
-                    <div class="panel-title">Messages envoyés</div>
-                    <div class="panel-subtitle">Tous les messages avec leurs canaux, expéditeur et livraison</div>
+                    <div class="panel-title">{{ __('messaging.grid_title') }}</div>
+                    <div class="panel-subtitle">{{ __('messaging.grid_subtitle') }}</div>
                 </div>
                 <div class="ml-auto flex items-center gap-2">
                     <div class="pcc-search">
@@ -560,7 +789,8 @@
                             <circle cx="11" cy="11" r="7" />
                             <path d="m20 20-3.5-3.5" />
                         </svg>
-                        <input type="search" id="messages-quick-filter" placeholder="Rechercher un message…">
+                        <input type="search" id="messages-quick-filter"
+                            placeholder="{{ __('messaging.search_placeholder') }}">
                     </div>
                     <button type="button" id="btn-messages-export" class="pcc-tbtn dark">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -569,7 +799,7 @@
                             <polyline points="7 10 12 15 17 10" />
                             <line x1="12" y1="15" x2="12" y2="3" />
                         </svg>
-                        Export
+                        {{ __('messaging.btn_export') }}
                     </button>
                 </div>
             </div>
@@ -577,6 +807,44 @@
             <div id="messages-grid" class="ag-theme-quartz ag-theme-pcc" style="height:600px;width:100%;"></div>
         </div>
     </div>
+
+    {{-- Detail modal --}}
+    <div id="msg-modal" class="pcc-modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="pcc-modal">
+            <div class="pcc-modal-head">
+                <div>
+                    <h3>{{ __('messaging.detail_title') }}</h3>
+                    <div class="sub" id="msg-modal-key"></div>
+                </div>
+                <button type="button" class="pcc-modal-close" data-close-modal aria-label="{{ __('messaging.detail_close') }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="pcc-modal-body" id="msg-modal-body">
+                <p style="color:#94a3b8;font-size:13px;">{{ __('messaging.detail_loading') }}</p>
+            </div>
+            <div class="pcc-modal-foot">
+                <button type="button" class="pcc-tbtn" data-close-modal>{{ __('messaging.detail_close') }}</button>
+                <button type="button" class="pcc-tbtn dark" id="msg-modal-resend" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="h-4 w-4">
+                        <path d="M21 2v6h-6" />
+                        <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                        <path d="M3 22v-6h6" />
+                        <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                    </svg>
+                    {{ __('messaging.action_resend') }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {{-- Hidden resend form (submitted programmatically) --}}
+    <form id="msg-resend-form" method="POST" action="" class="hidden">
+        @csrf
+    </form>
 
     <script>
         (function() {
@@ -603,7 +871,7 @@
                         data: {
                             labels: CHARTS.trendLabels,
                             datasets: [{
-                                label: 'Livrés',
+                                label: '{{ __('messaging.dataset_delivered') }}',
                                 data: CHARTS.trendDelivered,
                                 borderColor: '#10b981',
                                 backgroundColor: gDel,
@@ -614,7 +882,7 @@
                                 pointHoverRadius: 5,
                                 pointHoverBackgroundColor: '#10b981',
                             }, {
-                                label: 'Échecs',
+                                label: '{{ __('messaging.dataset_failed') }}',
                                 data: CHARTS.trendFailed,
                                 borderColor: '#ef4444',
                                 backgroundColor: gFail,
@@ -751,10 +1019,10 @@
             ];
 
             const STATUS_META = {
-                sent: ['b-sent', 'Livré'],
-                partial: ['b-partial', 'Partiel'],
-                failed: ['b-failed', 'Échec'],
-                queued: ['b-queued', 'En file'],
+                sent: ['b-sent', '{{ __('messaging.status_sent') }}'],
+                partial: ['b-partial', '{{ __('messaging.status_partial') }}'],
+                failed: ['b-failed', '{{ __('messaging.status_failed') }}'],
+                queued: ['b-queued', '{{ __('messaging.status_queued') }}'],
             };
             const CH_META = {
                 push: ['p-push', 'Push',
@@ -780,11 +1048,11 @@
             };
 
             const columnDefs = [{
-                    headerName: 'Message',
+                    headerName: '{{ __('messaging.col_message') }}',
                     field: 'title',
                     minWidth: 280,
                     flex: 1.6,
-                    pinned: 'left',
+                    // pinned: 'left',
                     filter: 'agTextColumnFilter',
                     cellRenderer: p => {
                         const title = esc(p.value || '');
@@ -798,7 +1066,7 @@
                     },
                 },
                 {
-                    headerName: 'Canaux',
+                    headerName: '{{ __('messaging.col_channels') }}',
                     field: 'channels',
                     minWidth: 180,
                     filter: false,
@@ -815,13 +1083,13 @@
                     },
                 },
                 {
-                    headerName: 'Envoyé par',
+                    headerName: '{{ __('messaging.col_sent_by') }}',
                     field: 'sent_by',
                     minWidth: 180,
                     flex: 1,
                     filter: 'agTextColumnFilter',
                     cellRenderer: p => {
-                        const name = esc(p.value || 'Système');
+                        const name = esc(p.value || '{{ __('messaging.sender_system') }}');
                         const grad = PALETTE[hash(p.value || '') % PALETTE.length];
                         return `<div style="display:flex;align-items:center;gap:10px;height:100%;">
                             <span class="pcc-avatar" style="background:${grad}">${esc(initials(p.value))}</span>
@@ -830,7 +1098,7 @@
                     },
                 },
                 {
-                    headerName: 'Destinataires',
+                    headerName: '{{ __('messaging.col_recipients') }}',
                     field: 'recipients_count',
                     minWidth: 140,
                     filter: 'agNumberColumnFilter',
@@ -839,7 +1107,7 @@
                         `<div class="num-cell n-slate">${fmtNum(p.value)}</div>`,
                 },
                 {
-                    headerName: 'Livrés',
+                    headerName: '{{ __('messaging.col_delivered') }}',
                     field: 'delivered_count',
                     minWidth: 120,
                     filter: 'agNumberColumnFilter',
@@ -853,7 +1121,7 @@
                     },
                 },
                 {
-                    headerName: 'Échecs',
+                    headerName: '{{ __('messaging.col_failed') }}',
                     field: 'failed_count',
                     minWidth: 120,
                     filter: 'agNumberColumnFilter',
@@ -864,7 +1132,7 @@
                     },
                 },
                 {
-                    headerName: 'Statut',
+                    headerName: '{{ __('messaging.col_status') }}',
                     field: 'status',
                     minWidth: 130,
                     filter: 'agSetColumnFilter',
@@ -878,7 +1146,7 @@
                     },
                 },
                 {
-                    headerName: 'Date',
+                    headerName: '{{ __('messaging.col_date') }}',
                     field: 'created_at',
                     minWidth: 150,
                     filter: 'agDateColumnFilter',
@@ -901,9 +1169,36 @@
                         </div>`;
                     },
                 },
+                {
+                    headerName: '{{ __('messaging.col_actions') }}',
+                    field: 'actions',
+                    minWidth: 200,
+                    maxWidth: 240,
+                    // pinned: 'right',
+                    filter: false,
+                    sortable: false,
+                    resizable: false,
+                    cellRenderer: p => {
+                        const id = p.data?.id;
+                        const failed = Number(p.data?.failed_count || 0);
+                        const detailBtn = `<button type="button" class="pcc-abtn" data-detail="${id}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                            {{ __('messaging.action_detail') }}
+                        </button>`;
+                        // const resendBtn = failed > 0 ? `<button type="button" class="pcc-abtn resend" data-resend="${id}">
+                        //     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+                        //     {{ __('messaging.action_resend') }}
+                        // </button>` : '';
+                        // return `<div class="pcc-actions">${detailBtn}${resendBtn}</div>`;
+                        return `<div class="pcc-actions">${detailBtn}</div>`;
+                    },
+                },
             ];
 
             let gridApi;
+
+            // AG Grid Enterprise license
+            agGrid.LicenseManager.setLicenseKey('{{ env('AG_GRID_LICENSE_KEY') }}');
 
             function bootGrid() {
                 const el = document.getElementById('messages-grid');
@@ -933,6 +1228,151 @@
                             'delivered_count', 'failed_count', 'status', 'created_at'
                         ],
                     }));
+
+                // Row action buttons (detail / resend) via event delegation.
+                el.addEventListener('click', e => {
+                    const dBtn = e.target.closest('[data-detail]');
+                    if (dBtn) {
+                        openDetail(dBtn.getAttribute('data-detail'));
+                        return;
+                    }
+                    const rBtn = e.target.closest('[data-resend]');
+                    if (rBtn) {
+                        resend(rBtn.getAttribute('data-resend'));
+                    }
+                });
+            }
+
+            // ── Detail modal + resend ──
+            const MSG_BASE = @json(url('messaging'));
+            const REC_STATUS = {
+                sent: ['b-sent', '{{ __('messaging.status_sent') }}'],
+                failed: ['b-failed', '{{ __('messaging.status_failed') }}'],
+                pending: ['b-pending', '{{ __('messaging.status_pending') }}'],
+            };
+            const CH_LABEL = {
+                push: 'Push',
+                mail: 'E-mail',
+                whatsapp: 'WhatsApp'
+            };
+            const RESEND_CONFIRM = '{{ __('messaging.resend_confirm') }}';
+
+            const modal = document.getElementById('msg-modal');
+            const modalBody = document.getElementById('msg-modal-body');
+            const modalKey = document.getElementById('msg-modal-key');
+            const modalResend = document.getElementById('msg-modal-resend');
+            const resendForm = document.getElementById('msg-resend-form');
+
+            function closeModal() {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden', 'true');
+            }
+
+            document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', closeModal));
+            modal.addEventListener('click', e => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+            });
+
+            function fmtDate(iso) {
+                if (!iso) return '—';
+                const d = new Date(iso);
+                return d.toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }) + ' ' + d.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            function openDetail(id) {
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden', 'false');
+                modalKey.textContent = '';
+                modalResend.style.display = 'none';
+                modalBody.innerHTML =
+                    `<p style="color:#94a3b8;font-size:13px;">{{ __('messaging.detail_loading') }}</p>`;
+
+                fetch(`${MSG_BASE}/${id}/detail`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(r => {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(data => renderDetail(data))
+                    .catch(() => {
+                        modalBody.innerHTML =
+                            `<p style="color:#b91c1c;font-size:13px;">{{ __('messaging.detail_load_error') }}</p>`;
+                    });
+            }
+
+            function renderDetail(d) {
+                modalKey.textContent = d.message_key || '';
+
+                const st = STATUS_META[d.status] || ['b-queued', d.status];
+                const chips = [
+                    `<span class="chip"><span class="pcc-badge ${st[0]}"><span class="dot"></span>${esc(st[1])}</span></span>`,
+                    `<span class="chip">{{ __('messaging.col_sent_by') }}: ${esc(d.sent_by)}</span>`,
+                    `<span class="chip">{{ __('messaging.col_recipients') }}: ${fmtNum(d.recipients_count)}</span>`,
+                    `<span class="chip" style="color:#059669">{{ __('messaging.col_delivered') }}: ${fmtNum(d.delivered_count)}</span>`,
+                    `<span class="chip" style="color:#b91c1c">{{ __('messaging.col_failed') }}: ${fmtNum(d.failed_count)}</span>`,
+                    `<span class="chip">${fmtDate(d.created_at)}</span>`,
+                ].join('');
+
+                const rows = (d.recipients || []).map(r => {
+                    const rs = REC_STATUS[r.status] || ['b-queued', r.status];
+                    const err = r.error ?
+                        `<div class="r-err">${esc(r.error)}</div>` : '';
+                    return `<tr>
+                        <td><div class="r-name">${esc(r.name)}</div><div class="r-contact">${esc(r.contact)}</div></td>
+                        <td>${esc(CH_LABEL[r.channel] || r.channel)}</td>
+                        <td><span class="pcc-badge ${rs[0]}"><span class="dot"></span>${esc(rs[1])}</span>${err}</td>
+                        <td>${fmtDate(r.sent_at)}</td>
+                    </tr>`;
+                }).join('');
+
+                const table = (d.recipients && d.recipients.length) ? `
+                    <table class="pcc-rtable">
+                        <thead><tr>
+                            <th>{{ __('messaging.detail_recipient') }}</th>
+                            <th>{{ __('messaging.detail_channel') }}</th>
+                            <th>{{ __('messaging.detail_status') }}</th>
+                            <th>{{ __('messaging.detail_sent_at') }}</th>
+                        </tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>` :
+                    `<p style="color:#94a3b8;font-size:13px;">{{ __('messaging.detail_no_recipients') }}</p>`;
+
+                modalBody.innerHTML = `
+                    <div class="pcc-detail-msg">
+                        <div class="t">${esc(d.title)}</div>
+                        <div class="b">${esc(d.body)}</div>
+                        <div class="pcc-detail-meta">${chips}</div>
+                    </div>
+                    <div style="font-size:12px;font-weight:800;color:#0f172a;margin-bottom:8px;">{{ __('messaging.detail_recipients') }}</div>
+                    ${table}`;
+
+                if (Number(d.failed_count) > 0) {
+                    modalResend.style.display = '';
+                    modalResend.onclick = () => resend(d.id);
+                } else {
+                    modalResend.style.display = 'none';
+                    modalResend.onclick = null;
+                }
+            }
+
+            function resend(id) {
+                if (!window.confirm(RESEND_CONFIRM)) return;
+                resendForm.action = `${MSG_BASE}/${id}/resend`;
+                resendForm.submit();
             }
 
             document.readyState === 'loading' ?

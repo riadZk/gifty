@@ -1,0 +1,45 @@
+# docker-compose.traefik.yml — surcharge Traefik pour gifty.plutus.ma
+# Usage :
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.traefik.yml up -d
+# Réutilise le Traefik existant (entrypoint websecure, certresolver letsencrypt).
+
+name: gifty
+
+services:
+  nginx:
+    networks:
+      - pcc_network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.gifty.rule=Host(`gifty.plutus.ma`)"
+      - "traefik.http.routers.gifty.entrypoints=websecure"
+      - "traefik.http.routers.gifty.tls.certresolver=letsencrypt"
+      - "traefik.http.services.gifty.loadbalancer.server.port=80"
+      # En-têtes de sécurité (HSTS)
+      - "traefik.http.middlewares.gifty-headers.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.gifty-headers.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.gifty-headers.headers.forceSTSHeader=true"
+      - "traefik.http.routers.gifty.middlewares=gifty-headers"
+
+  # Exposition WSS de Reverb via Traefik, sans DNS dédié :
+  # le navigateur se connecte à wss://gifty.plutus.ma/app/{key} ; Traefik
+  # route le préfixe /app/ vers Reverb (port 8080) en réutilisant le
+  # certificat TLS du domaine principal. Priorité élevée pour passer avant nginx.
+  reverb:
+    networks:
+      - pcc_network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.gifty-reverb.rule=Host(`gifty.plutus.ma`) && PathPrefix(`/app/`)"
+      - "traefik.http.routers.gifty-reverb.entrypoints=websecure"
+      - "traefik.http.routers.gifty-reverb.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.gifty-reverb.priority=100"
+      - "traefik.http.services.gifty-reverb.loadbalancer.server.port=8080"
+
+networks:
+  traefik-public:
+    external: true

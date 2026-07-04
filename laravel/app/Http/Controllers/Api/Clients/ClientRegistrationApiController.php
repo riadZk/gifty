@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Clients;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Controller;
 use App\Http\Requests\Api\ClientStatusRequest;
 use App\Http\Requests\Api\RegisterClientRequest;
 use App\Models\Client;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\NewClientRegistered;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class ClientRegistrationApiController extends Controller
 {
@@ -20,22 +22,27 @@ class ClientRegistrationApiController extends Controller
      */
     public function register(RegisterClientRequest $request): JsonResponse
     {
+        $data = $request->validated();
+
         $client = Client::create([
-            ...$request->validated(),
+            ...collect($data)->except('picture')->all(),
             'status' => Client::STATUS_INACTIVE,
         ]);
 
-        // Notify admin users (IDs: [1])
-        $notification = new NewClientRegistered($client);
-        User::whereIn('id', [1])->each(fn (User $user) => $user->notify($notification));
+        if ($request->hasFile('picture')) {
+            $ext = $request->file('picture')->getClientOriginalExtension();
+            $client->addMediaFromRequest('picture')->usingFileName(Str::uuid() . '.' . $ext)->toMediaCollection('picture');
+        }
 
-        return response()->json([
-            'message' => 'Your account has been created and is awaiting activation by an administrator.',
-            'data'    => [
-                'id'     => $client->id,
-                'status' => $client->status,
-            ],
-        ], 201);
+        // Notify all users with the admin role
+        $notification = new NewClientRegistered($client);
+        User::whereHas('roles', fn($q) => $q->where('name', 'admin'))
+            ->each(fn(User $user) => $user->notify($notification));
+
+        return $this->jsonResponse([
+            'id'          => $client->id,
+            'status'      => $client->status,
+        ], 'Your account has been created and is awaiting activation by an administrator.', 201);
     }
 
     /**
@@ -48,10 +55,10 @@ class ClientRegistrationApiController extends Controller
         $client = Client::where('email', $request->validated('email'))->first();
 
         if (! $client) {
-            return response()->json(['message' => 'No client found for this email.'], 404);
+            return $this->jsonResponse(null, 'No client found for this email.', 404);
         }
 
-        return response()->json([
+        return $this->jsonResponse([
             'status'        => $client->status,
             'registered_at' => $client->created_at,
         ]);

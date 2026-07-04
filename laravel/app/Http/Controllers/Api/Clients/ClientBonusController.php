@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Clients;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Api\Controller;
 use App\Models\BonusLevel;
 use App\Models\BonusRequest;
+use App\Models\Role;
 use App\Models\User;
 use App\Notifications\NewBonusRequest;
 use Illuminate\Http\JsonResponse;
@@ -41,7 +42,7 @@ class ClientBonusController extends Controller
                 'has_pending_request' => in_array($level->id, $pendingLevelIds),
             ]);
 
-        return response()->json([
+        return $this->jsonResponse([
             'points_balance' => (float) $client->points_balance,
             'bonus_levels'   => $levels,
         ]);
@@ -65,10 +66,10 @@ class ClientBonusController extends Controller
             'pending'  => $requests->where('status', 'pending')->count(),
             'approved' => $requests->where('status', 'approved')->count(),
             'rejected' => $requests->where('status', 'rejected')->count(),
-            'delivered'=> $requests->where('status', 'delivered')->count(),
+            'delivered' => $requests->where('status', 'delivered')->count(),
         ];
 
-        return response()->json([
+        return $this->jsonResponse([
             'counts'  => $counts,
             'data'    => $requests->values(),
         ]);
@@ -92,12 +93,11 @@ class ClientBonusController extends Controller
 
         // Check sufficient points
         if ($client->points_balance < $level->required_points) {
-            return response()->json([
-                'message'       => 'Solde de points insuffisant.',
-                'points_balance'=> (float) $client->points_balance,
-                'points_required'=> (float) $level->required_points,
-                'points_missing'=> (float) ($level->required_points - $client->points_balance),
-            ], 422);
+            return $this->jsonResponse([
+                'points_balance'  => (float) $client->points_balance,
+                'points_required' => (float) $level->required_points,
+                'points_missing'  => (float) ($level->required_points - $client->points_balance),
+            ], 'Insufficient points balance.', 422);
         }
 
         // Prevent duplicate pending request
@@ -107,15 +107,13 @@ class ClientBonusController extends Controller
             ->exists();
 
         if ($exists) {
-            return response()->json([
-                'message' => 'Une demande en attente existe déjà pour ce bonus.',
-            ], 422);
+            return $this->jsonResponse(null, 'A pending request already exists for this bonus.', 422);
         }
 
         $bonusRequest = BonusRequest::create([
             'client_id'      => $client->id,
             'bonus_level_id' => $level->id,
-            'points_required'=> $level->required_points,
+            'points_required' => $level->required_points,
             'status'         => BonusRequest::STATUS_PENDING,
             'requested_at'   => now(),
             'notes'          => $validated['notes'] ?? null,
@@ -123,14 +121,12 @@ class ClientBonusController extends Controller
 
         $bonusRequest->load(['bonusLevel', 'client']);
 
-        // Notify all admin users (same pattern as client registration)
+        // Notify all users with the admin role
         $notification = new NewBonusRequest($bonusRequest);
-        User::whereIn('id', [1])->each(fn(User $user) => $user->notify($notification));
+        User::whereHas('roles', fn($q) => $q->where('name', 'admin'))
+            ->each(fn(User $user) => $user->notify($notification));
 
-        return response()->json([
-            'message' => 'Demande soumise avec succès.',
-            'data'    => $this->formatRequest($bonusRequest),
-        ], 201);
+        return $this->jsonResponse($this->formatRequest($bonusRequest), 'Request submitted successfully.', 201);
     }
 
     // ── GET /api/client/bonus-requests/{id} ──────────────────────────────────
@@ -143,11 +139,13 @@ class ClientBonusController extends Controller
         $bonusRequest = BonusRequest::with(['bonusLevel', 'transaction'])
             ->where('id', $id)
             ->where('client_id', $client->id)
-            ->firstOrFail();
+            ->first();
 
-        return response()->json([
-            'data' => $this->formatRequest($bonusRequest),
-        ]);
+        if (! $bonusRequest) {
+            return $this->jsonResponse(null, 'Bonus request not found.', 404);
+        }
+
+        return $this->jsonResponse($this->formatRequest($bonusRequest));
     }
 
     // ── DELETE /api/client/bonus-requests/{id} ────────────────────────────────
@@ -160,11 +158,15 @@ class ClientBonusController extends Controller
         $bonusRequest = BonusRequest::where('id', $id)
             ->where('client_id', $client->id)
             ->where('status', BonusRequest::STATUS_PENDING)
-            ->firstOrFail();
+            ->first();
+
+        if (! $bonusRequest) {
+            return $this->jsonResponse(null, 'Pending bonus request not found.', 404);
+        }
 
         $bonusRequest->delete();
 
-        return response()->json(['message' => 'Demande annulée.']);
+        return $this->jsonResponse(null, 'Request cancelled.');
     }
 
     // ── Helper ────────────────────────────────────────────────────────────────

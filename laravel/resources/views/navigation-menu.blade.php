@@ -32,7 +32,7 @@
                     <path d="M5 10v10h14V10" />
                     <path d="M9 20v-6h6v6" />
                 </svg>
-                Dashboard
+                {{ __('Dashboard') }}
             </a>
 
             <a href="{{ route('kpis.index') }}"
@@ -44,7 +44,7 @@
                     <line x1="12" y1="20" x2="12" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="14" />
                 </svg>
-                KPIs
+                {{ __('KPIs') }}
             </a>
 
             <a href="{{ route('clients') }}"
@@ -55,19 +55,8 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
-                Clients
+                {{ __('Clients') }}
             </a>
-
-            {{-- <a href="{{ route('loyalty.index') }}"
-                class="{{ $linkBase }} {{ $isActive('loyalty*') ? $linkActive : $linkIdle }}">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
-                    class="h-4 w-4 {{ $isActive('loyalty*') ? $iconActive : $iconIdle }}" fill="currentColor"
-                    aria-hidden="true">
-                    <path
-                        d="M385.5 132.8C393.1 119.9 406.9 112 421.8 112L424 112C446.1 112 464 129.9 464 152C464 174.1 446.1 192 424 192L350.7 192L385.5 132.8zM254.5 132.8L289.3 192L216 192C193.9 192 176 174.1 176 152C176 129.9 193.9 112 216 112L218.2 112C233.1 112 247 119.9 254.5 132.8zM344.1 108.5L320 149.5L295.9 108.5C279.7 80.9 250.1 64 218.2 64L216 64C167.4 64 128 103.4 128 152C128 166.4 131.5 180 137.6 192L96 192C78.3 192 64 206.3 64 224L64 256C64 273.7 78.3 288 96 288L544 288C561.7 288 576 273.7 576 256L576 224C576 206.3 561.7 192 544 192L502.4 192C508.5 180 512 166.4 512 152C512 103.4 472.6 64 424 64L421.8 64C389.9 64 360.3 80.9 344.1 108.4zM544 336L344 336L344 544L480 544C515.3 544 544 515.3 544 480L544 336zM296 336L96 336L96 480C96 515.3 124.7 544 160 544L296 544L296 336z" />
-                </svg>
-                Loyalty Settings
-            </a> --}}
 
             <a href="{{ route('demandes.index') }}"
                 class="{{ $linkBase }} {{ $isActive('demandes*') ? $linkActive : $linkIdle }}">
@@ -80,7 +69,7 @@
                     <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
                     <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
                 </svg>
-                Demandes
+                {{ __('Demandes') }}
             </a>
 
             <a href="{{ route('messaging.index') }}"
@@ -90,7 +79,7 @@
                     aria-hidden="true">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                Notifier
+                {{ __('Notifier') }}
             </a>
 
 
@@ -111,13 +100,13 @@
                 hasMore: false,
                 page: 1,
                 csrfToken: document.querySelector('meta[name=csrf-token]')?.content ?? '',
-            
+
                 async fetchNotifs(append = false) {
                     if (append) { this.loadingMore = true; } else {
                         this.loading = true;
                         this.page = 1;
                     }
-            
+
                     try {
                         const r = await fetch('{{ route('notifications.index') }}?page=' + this.page, {
                             headers: { 'Accept': 'application/json' }
@@ -135,13 +124,13 @@
                         this.loadingMore = false;
                     }
                 },
-            
+
                 async loadMore() {
                     if (this.loadingMore || !this.hasMore) return;
                     this.page++;
                     await this.fetchNotifs(true);
                 },
-            
+
                 async markRead() {
                     await fetch('{{ route('notifications.markRead') }}', {
                         method: 'POST',
@@ -150,7 +139,7 @@
                     this.unread = 0;
                     this.items = this.items.map(n => ({ ...n, read: true }));
                 },
-            
+
                 async markOne(id) {
                     await fetch('/notifications/' + id + '/read', {
                         method: 'POST',
@@ -159,24 +148,27 @@
                     this.items = this.items.map(n => n.id == id ? { ...n, read: true } : n);
                     this.unread = Math.max(0, this.unread - 1);
                 },
-            
+
                 onScroll(el) {
                     if (el.scrollHeight - el.scrollTop - el.clientHeight < 100) this.loadMore();
                 },
-            
+
                 init() {
                     this.fetchNotifs();
                     @auth
                     if (window.Echo) {
                         window.Echo.private('App.Models.User.{{ auth()->id() }}')
                             .notification((notif) => {
-                                this.unread++;
-                                this.items.unshift({
-                                    id: notif.id ?? ('rt-' + Date.now()),
-                                    data: notif,
-                                    read: false,
-                                    created_at: 'À l\'instant',
-                                });
+                                const alreadyExists = this.items.some(i => i.id === notif.id);
+                                if (!alreadyExists) {
+                                    this.unread++;
+                                    this.items.unshift({
+                                        id: notif.id ?? ('rt-' + Date.now()),
+                                        data: notif,
+                                        read: false,
+                                        created_at: 'À l\'instant',
+                                    });
+                                }
                             });
                     }
                     @endauth
@@ -208,7 +200,7 @@
                         </span>
                         <button @click="markRead()"
                             class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 transition">
-                            Tout marquer lu
+                            {{ __('notifications.mark_all_read') }}
                         </button>
                     </div>
 
@@ -233,7 +225,7 @@
                                     <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
                                     <path d="M13.7 21a2 2 0 0 1-3.4 0" />
                                 </svg>
-                                <span class="text-[12px] text-slate-400">Aucune notification</span>
+                                <span class="text-[12px] text-slate-400">{{ __('notifications.empty') }}</span>
                             </div>
                         </template>
 
@@ -258,7 +250,15 @@
                                             <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
                                         </svg>
                                     </template>
-                                    <template x-if="n.data.type !== 'new_bonus_request'">
+                                    <template x-if="n.data.type === 'campaign_processed'">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
+                                            fill="currentColor" class="h-4 w-4">
+                                            <path
+                                                d="M568.4 37.7C578.2 34.2 589 36.7 596.4 44C603.8 51.3 606.2 62.2 602.7 72L424.7 568.9C419.7 582.8 406.6 592 391.9 592C377.7 592 364.9 583.4 359.6 570.3L295.4 412.3C290.9 401.3 292.9 388.7 300.6 379.7L395.1 267.3C400.2 261.2 399.8 252.3 394.2 246.7C388.6 241.1 379.6 240.7 373.6 245.8L261.2 340.1C252.1 347.7 239.6 349.7 228.6 345.3L70.1 280.8C57 275.5 48.4 262.7 48.4 248.5C48.4 233.8 57.6 220.7 71.5 215.7L568.4 37.7z" />
+                                        </svg>
+                                    </template>
+                                    <template
+                                        x-if="n.data.type !== 'new_bonus_request' && n.data.type !== 'campaign_processed'">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" class="h-4 w-4">
                                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -300,7 +300,7 @@
                     <div class="border-t border-slate-100 px-4 py-2.5">
                         <a href="{{ route('notifications.all') }}"
                             class="flex items-center justify-center gap-1 text-[12px] font-semibold text-slate-500 hover:text-slate-800 transition">
-                            Voir toutes les notifications
+                            {{ __('notifications.view_all') }}
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round" class="h-3 w-3">
                                 <path d="M5 12h14M12 5l7 7-7 7" />
@@ -338,7 +338,6 @@
 
                 <x-slot name="content">
                     @php
-                        $localeLabels = ['en' => 'EN', 'fr' => 'FR', 'ar' => 'AR'];
                         $currentLocale = app()->getLocale();
                     @endphp
 
@@ -357,7 +356,7 @@
                                 <path
                                     d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
                             </svg>
-                            Configuration
+                            {{ __('nav.configuration') }}
                         </a>
 
 
@@ -378,24 +377,45 @@
                         @endif
 
                         {{-- Language accordion --}}
-                        <div x-data="{ open: false }" @click.stop>
+                        @php
+                            $langsMeta = [
+                                'en' => [
+                                    'code' => 'EN',
+                                    'name' => 'English',
+                                    'flag' => 'https://loupiot.zyfed.fr/assets/img/countries/english.png',
+                                ],
+                                'fr' => [
+                                    'code' => 'FR',
+                                    'name' => 'Français',
+                                    'flag' => 'https://loupiot.zyfed.fr/assets/img/countries/french.png',
+                                ],
+                            ];
+                            $activeLangFlag = $langsMeta[$currentLocale]['flag'] ?? $langsMeta['en']['flag'];
+                            $activeLangCode = strtoupper($currentLocale);
+                        @endphp
+
+                        {{-- Hidden locale forms --}}
+                        @foreach ($langsMeta as $locale => $lang)
+                            <form method="POST" action="{{ route('locale.switch', $locale) }}"
+                                id="locale-form-{{ $locale }}" style="display:none;">
+                                @csrf
+                            </form>
+                        @endforeach
+
+                        {{-- Language selector --}}
+                        <div x-data="{ open: false }" @click.outside="open = false" class="relative" @click.stop>
                             <button type="button" @click.stop="open = !open"
-                                class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-semibold text-slate-600 hover:bg-slate-100 transition">
+                                class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-semibold text-slate-700 hover:bg-slate-100 transition">
+                                {{-- Current flag --}}
                                 <span
-                                    class="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                                        class="h-3.5 w-3.5">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <path
-                                            d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                                    </svg>
+                                    class="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded border border-slate-200 bg-slate-100">
+                                    <img src="{{ $activeLangFlag }}" alt="{{ $activeLangCode }}"
+                                        class="h-full w-full object-cover">
                                 </span>
-                                Language
+                                {{ __('nav.language') }}
                                 <span class="ml-auto flex items-center gap-1.5">
                                     <span
-                                        class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">
-                                        {{ strtoupper($currentLocale) }}
-                                    </span>
+                                        class="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-bold text-slate-500">{{ $activeLangCode }}</span>
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         class="h-3 w-3 text-slate-400 transition-transform duration-200"
                                         :class="open ? 'rotate-180' : ''">
@@ -404,28 +424,25 @@
                                 </span>
                             </button>
 
-                            <div x-show="open" x-transition
-                                class="mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white">
-                                @php
-                                    $langs = [
-                                        'en' => ['code' => 'EN', 'name' => 'English'],
-                                        'fr' => ['code' => 'FR', 'name' => 'Français'],
-                                        'ar' => ['code' => 'AR', 'name' => 'العربية'],
-                                    ];
-                                @endphp
-                                @foreach ($langs as $locale => $lang)
+                            <div x-show="open" x-transition x-cloak
+                                class="mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+                                @foreach ($langsMeta as $locale => $lang)
                                     <button type="button"
-                                        @click.stop="fetch('{{ url('/locale') }}/{{ $locale }}', {
-                                            method: 'POST',
-                                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
-                                        }).then(() => window.location.reload())"
-                                        class="flex w-full items-center gap-3 px-3 py-2.5 text-[12.5px] transition-colors {{ $currentLocale === $locale ? 'bg-blue-500 text-white font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                                        @click.stop="document.getElementById('locale-form-{{ $locale }}').submit()"
+                                        class="flex w-full items-center gap-3 px-3 py-2.5 text-[13px] transition-colors {{ $currentLocale === $locale ? 'bg-indigo-50' : 'hover:bg-slate-50' }}">
+                                        {{-- Flag --}}
                                         <span
-                                            class="w-7 shrink-0 text-left text-[11px] font-bold {{ $currentLocale === $locale ? 'text-blue-200' : 'text-slate-400' }}">{{ $lang['code'] }}</span>
-                                        <span class="flex-1 text-left">{{ $lang['name'] }}</span>
+                                            class="flex h-5 w-5 shrink-0 overflow-hidden rounded border border-slate-200">
+                                            <img src="{{ $lang['flag'] }}" alt="{{ $lang['code'] }}"
+                                                class="h-full w-full object-cover">
+                                        </span>
+                                        <span
+                                            class="flex-1 text-left font-semibold {{ $currentLocale === $locale ? 'text-indigo-700' : 'text-slate-700' }}">{{ $lang['name'] }}</span>
+                                        <span
+                                            class="text-[11px] font-bold {{ $currentLocale === $locale ? 'text-indigo-400' : 'text-slate-400' }}">{{ $lang['code'] }}</span>
                                         @if ($currentLocale === $locale)
                                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2.5" class="h-3.5 w-3.5 text-white">
+                                                stroke-width="2.5" class="h-3.5 w-3.5 text-indigo-500">
                                                 <path d="m5 12 5 5L20 7" />
                                             </svg>
                                         @endif
@@ -451,7 +468,7 @@
                                         <line x1="21" y1="12" x2="9" y2="12" />
                                     </svg>
                                 </span>
-                                Log Out
+                                {{ __('nav.logout') }}
                             </button>
                         </form>
                     </div>
@@ -472,15 +489,66 @@
     {{-- Mobile menu --}}
     <div x-show="mobileMenuOpen" x-cloak x-transition class="border-t border-slate-100 bg-white px-4 py-3 lg:hidden">
         <div class="flex flex-col gap-1">
+
             <a href="{{ route('dashboard') }}"
-                class="{{ $linkBase }} {{ $isActive('dashboard') ? $linkActive : $linkIdle }}">Dashboard</a>
-            <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">Opérations</a>
-            <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">Envois</a>
-            <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">Clients</a>
-            <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">Map</a>
-            <a href="#" class="{{ $linkBase }} {{ $linkIdle }}">Calendar</a>
-            <a href="{{ route('profile.show') }}"
-                class="{{ $linkBase }} {{ $linkIdle }}">Administration</a>
+                class="{{ $linkBase }} {{ $isActive('dashboard') ? $linkActive : $linkIdle }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="h-4 w-4 {{ $isActive('dashboard') ? $iconActive : $iconIdle }}">
+                    <path d="M3 11l9-8 9 8" />
+                    <path d="M5 10v10h14V10" />
+                    <path d="M9 20v-6h6v6" />
+                </svg>
+                {{ __('nav.dashboard') }}
+            </a>
+
+            <a href="{{ route('kpis.index') }}"
+                class="{{ $linkBase }} {{ $isActive('kpis*') ? $linkActive : $linkIdle }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="h-4 w-4 {{ $isActive('kpis*') ? $iconActive : $iconIdle }}">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                {{ __('nav.kpis') }}
+            </a>
+
+            <a href="{{ route('clients') }}"
+                class="{{ $linkBase }} {{ $isActive('clients*') ? $linkActive : $linkIdle }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="h-4 w-4 {{ $isActive('clients*') ? $iconActive : $iconIdle }}">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                </svg>
+                {{ __('nav.clients') }}
+            </a>
+
+            <a href="{{ route('demandes.index') }}"
+                class="{{ $linkBase }} {{ $isActive('demandes*') ? $linkActive : $linkIdle }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="h-4 w-4 {{ $isActive('demandes*') ? $iconActive : $iconIdle }}">
+                    <polyline points="20 12 20 22 4 22 4 12" />
+                    <rect x="2" y="7" width="20" height="5" />
+                    <line x1="12" y1="22" x2="12" y2="7" />
+                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+                </svg>
+                {{ __('nav.demandes') }}
+            </a>
+
+            <a href="{{ route('messaging.index') }}"
+                class="{{ $linkBase }} {{ $isActive('messaging*') ? $linkActive : $linkIdle }}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="h-4 w-4 {{ $isActive('messaging*') ? $iconActive : $iconIdle }}">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                {{ __('nav.notifier') }}
+            </a>
+
         </div>
     </div>
 </nav>

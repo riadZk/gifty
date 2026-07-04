@@ -477,15 +477,14 @@
         <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div class="space-y-1">
                 <nav class="flex items-center gap-1.5 text-[11.5px] font-semibold text-slate-400">
-                    <span>Administration</span>
+                    <span>{{ __('clients.breadcrumb_admin') }}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
-                    <span class="text-slate-700">Clients</span>
+                    <span class="text-slate-700">{{ __('clients.page_title') }}</span>
                 </nav>
-                <h1 class="text-[26px] font-black tracking-tight text-slate-900">Clients</h1>
-                <p class="text-[13px] text-slate-500">Vue d'ensemble de votre base clients, activité et points de
-                    fidélité.</p>
+                <h1 class="text-[26px] font-black tracking-tight text-slate-900">{{ __('clients.page_title') }}</h1>
+                <p class="text-[13px] text-slate-500">{{ __('clients.page_subtitle') }}</p>
             </div>
         </div>
 
@@ -501,8 +500,8 @@
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
                     </svg></div>
                 <div class="stat-val">{{ number_format($clients->count()) }}</div>
-                <div class="stat-label">Total Clients</div>
-                <div class="stat-sub">Base clients enregistrés</div>
+                <div class="stat-label">{{ __('clients.stat_total') }}</div>
+                <div class="stat-sub">{{ __('clients.stat_total_sub') }}</div>
             </div>
             <div class="stat-card c-green">
                 <div class="glow"></div>
@@ -513,9 +512,10 @@
                         <polyline points="22 4 12 14.01 9 11.01" />
                     </svg></div>
                 <div class="stat-val">{{ number_format($activeCount) }}</div>
-                <div class="stat-label">Clients Actifs</div>
-                <div class="stat-sub">{{ $clients->count() ? round(($activeCount / $clients->count()) * 100) : 0 }}% du
-                    total</div>
+                <div class="stat-label">{{ __('clients.stat_active') }}</div>
+                <div class="stat-sub">
+                    {{ __('clients.stat_active_sub', ['pct' => $clients->count() ? round(($activeCount / $clients->count()) * 100) : 0]) }}
+                </div>
             </div>
             <div class="stat-card c-amber">
                 <div class="glow"></div>
@@ -528,8 +528,8 @@
                         <line x1="22" y1="11" x2="16" y2="11" />
                     </svg></div>
                 <div class="stat-val">{{ number_format($newCount) }}</div>
-                <div class="stat-label">Nouveaux ce mois</div>
-                <div class="stat-sub">Inscrits ce mois-ci</div>
+                <div class="stat-label">{{ __('clients.stat_new') }}</div>
+                <div class="stat-sub">{{ __('clients.stat_new_sub') }}</div>
             </div>
             <div class="stat-card c-violet">
                 <div class="glow"></div>
@@ -540,8 +540,8 @@
                             d="M385.5 132.8C393.1 119.9 406.9 112 421.8 112L424 112C446.1 112 464 129.9 464 152C464 174.1 446.1 192 424 192L350.7 192L385.5 132.8zM254.5 132.8L289.3 192L216 192C193.9 192 176 174.1 176 152C176 129.9 193.9 112 216 112L218.2 112C233.1 112 247 119.9 254.5 132.8zM344.1 108.5L320 149.5L295.9 108.5C279.7 80.9 250.1 64 218.2 64L216 64C167.4 64 128 103.4 128 152C128 166.4 131.5 180 137.6 192L96 192C78.3 192 64 206.3 64 224L64 256C64 273.7 78.3 288 96 288L544 288C561.7 288 576 273.7 576 256L576 224C576 206.3 561.7 192 544 192L502.4 192C508.5 180 512 166.4 512 152C512 103.4 472.6 64 424 64L421.8 64C389.9 64 360.3 80.9 344.1 108.4zM544 336L344 336L344 544L480 544C515.3 544 544 515.3 544 480L544 336zM296 336L96 336L96 480C96 515.3 124.7 544 160 544L296 544L296 336z" />
                     </svg></div>
                 <div class="stat-val">{{ number_format($totalPoints) }}</div>
-                <div class="stat-label">Points Distribués</div>
-                <div class="stat-sub">Total tous clients</div>
+                <div class="stat-label">{{ __('clients.stat_points') }}</div>
+                <div class="stat-sub">{{ __('clients.stat_points_sub') }}</div>
             </div>
         </div>
 
@@ -567,29 +567,29 @@
                     <circle cx="11" cy="11" r="7" />
                     <path d="m20 20-3.5-3.5" />
                 </svg>
-                <input type="search" id="client-search" placeholder="Rechercher un client…"
+                <input type="search" id="client-search" placeholder="{{ __('clients.search_placeholder') }}"
                     class="h-full flex-1 bg-transparent text-[13.5px] text-slate-600 placeholder-slate-400 focus:outline-none">
             </label>
 
             {{-- Status filter --}}
             <div class="filter-seg">
                 <button class="fbtn filter-btn f-active" data-status="all">
-                    Tous
+                    {{ __('clients.filter_all') }}
                     <span class="fbadge">{{ $totalClients }}</span>
                 </button>
                 <button class="fbtn filter-btn" data-status="active">
                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                    Actifs
+                    {{ __('clients.filter_active') }}
                     <span class="fbadge">{{ $activeCount }}</span>
                 </button>
                 <button class="fbtn filter-btn" data-status="inactive">
                     <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
-                    Inactifs
+                    {{ __('clients.filter_inactive') }}
                     <span class="fbadge">{{ $inactiveCount }}</span>
                 </button>
                 <button class="fbtn filter-btn" data-status="blocked">
                     <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-                    Bloqués
+                    {{ __('clients.filter_blocked') }}
                     <span class="fbadge">{{ $blockedCount }}</span>
                 </button>
             </div>
@@ -605,7 +605,7 @@
                             <rect x="3" y="14" width="7" height="7" rx="1" />
                             <rect x="14" y="14" width="7" height="7" rx="1" />
                         </svg>
-                        Grille
+                        {{ __('clients.view_grid') }}
                     </button>
                     <button id="view-list">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -614,7 +614,7 @@
                             <line x1="3" y1="12" x2="21" y2="12" />
                             <line x1="3" y1="18" x2="21" y2="18" />
                         </svg>
-                        Liste
+                        {{ __('clients.view_list') }}
                     </button>
                 </div>
                 {{-- Export --}}
@@ -624,7 +624,7 @@
                         <polyline points="7 10 12 15 17 10" />
                         <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
-                    Exporter CSV
+                    {{ __('clients.export_csv') }}
                 </a>
             </div>
         </div>
@@ -632,9 +632,9 @@
         {{-- ── Results count ── --}}
         <div class="flex items-center gap-2">
             <span class="text-sm font-semibold text-slate-500"><span id="result-count">{{ $clients->total() }}</span>
-                clients</span>
+                {{ __('clients.result_suffix') }}</span>
             <span class="h-1 w-1 rounded-full bg-slate-300"></span>
-            <span class="text-[11px] text-slate-400">Cliquez sur une carte pour voir le détail</span>
+            <span class="text-[11px] text-slate-400">{{ __('clients.results_hint') }}</span>
         </div>
 
         {{-- ── Cards grid ── --}}
@@ -649,13 +649,13 @@
                     <thead
                         class="border-b border-slate-100 bg-slate-50 text-[11px] font-black uppercase tracking-widest text-slate-400">
                         <tr>
-                            <th class="px-5 py-4">Client</th>
-                            <th class="px-4 py-4">Téléphone</th>
-                            <th class="px-4 py-4">Email</th>
-                            <th class="px-4 py-4">Code PCC</th>
-                            <th class="px-4 py-4 text-right">Ventes / Points</th>
-                            <th class="px-4 py-4">Statut</th>
-                            <th class="px-5 py-4 text-right">Actions</th>
+                            <th class="px-5 py-4">{{ __('clients.col_client') }}</th>
+                            <th class="px-4 py-4">{{ __('clients.col_phone') }}</th>
+                            <th class="px-4 py-4">{{ __('clients.col_email') }}</th>
+                            <th class="px-4 py-4">{{ __('clients.col_pcc_code') }}</th>
+                            <th class="px-4 py-4 text-right">{{ __('clients.col_sales_points') }}</th>
+                            <th class="px-4 py-4">{{ __('clients.col_status') }}</th>
+                            <th class="px-5 py-4 text-right">{{ __('clients.col_actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50" id="list-body">
@@ -671,7 +671,7 @@
                     class="h-4 w-4 animate-spin">
                     <path d="M21 12a9 9 0 1 1-6.219-8.56" />
                 </svg>
-                Chargement…
+                {{ __('clients.loading') }}
             </div>
 
             {{-- Empty state --}}
@@ -684,12 +684,12 @@
                     </svg>
                 </div>
                 <div>
-                    <p class="text-sm font-bold text-slate-700">Aucun client trouvé</p>
-                    <p class="text-xs text-slate-400 mt-1">Essayez un autre terme de recherche</p>
+                    <p class="text-sm font-bold text-slate-700">{{ __('clients.no_results') }}</p>
+                    <p class="text-xs text-slate-400 mt-1">{{ __('clients.no_results_sub') }}</p>
                 </div>
                 <button onclick="window.resetClientSearch && window.resetClientSearch()"
                     class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50">
-                    Réinitialiser la recherche
+                    {{ __('clients.reset_search') }}
                 </button>
             </div>
         </div>
@@ -848,9 +848,9 @@
 
             /* ── Client actions ── */
             const ACTION_LABEL = {
-                activate: 'activer',
-                block: 'bloquer',
-                unblock: 'débloquer'
+                activate: '{{ __('clients.js_verb_activate') }}',
+                block: '{{ __('clients.js_verb_block') }}',
+                unblock: '{{ __('clients.js_verb_unblock') }}'
             };
             const ACTION_COLOR = {
                 activate: '#FFC60B',
@@ -874,12 +874,13 @@
                 const verb = ACTION_LABEL[action] || action;
 
                 Swal.fire({
-                    title: 'Confirmation',
-                    html: `Voulez-vous vraiment <strong>${verb}</strong> <strong>${name}</strong> ?`,
+                    title: '{{ __('clients.js_confirm_title') }}',
+                    html: `{{ __('clients.js_confirm_html', ['verb' => ':verb', 'name' => ':name']) }}`
+                        .replace(':verb', verb).replace(':name', name),
                     icon: ACTION_ICON[action] || 'question',
                     showCancelButton: true,
                     confirmButtonText: verb.charAt(0).toUpperCase() + verb.slice(1),
-                    cancelButtonText: 'Annuler',
+                    cancelButtonText: '{{ __('clients.js_cancel') }}',
                     confirmButtonColor: ACTION_COLOR[action] || '#0f172a',
                     cancelButtonColor: '#94a3b8',
                     customClass: {
@@ -902,7 +903,8 @@
                         .then(res => res.json())
                         .then(data => {
                             if (data.status) {
-                                showToast(data.message ?? 'Statut mis à jour.', 'success');
+                                showToast(data.message ?? '{{ __('clients.js_status_updated') }}',
+                                    'success');
                                 setTimeout(() => location.reload(), 800);
                             } else {
                                 showToast(data.message ?? 'Une erreur est survenue.', 'error');

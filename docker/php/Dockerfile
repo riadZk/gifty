@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.4-fpm
 
 # ─── System dependencies ───────────────────
 RUN apt-get update && apt-get install -y \
@@ -9,18 +9,19 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libpq-dev \
     libzip-dev \
+    procps \
     zip \
     unzip \
     && docker-php-ext-install \
-        pdo_mysql \
-        pdo_pgsql \
-        pgsql \
-        mbstring \
-        exif \
-        pcntl \
-        bcmath \
-        gd \
-        zip \
+    pdo_mysql \
+    pdo_pgsql \
+    pgsql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    zip \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && apt-get clean \

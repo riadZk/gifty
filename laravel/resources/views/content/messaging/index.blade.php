@@ -276,15 +276,15 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div class="flex flex-col gap-1">
                 <nav class="flex items-center gap-1.5 text-[11.5px] font-semibold text-slate-400">
-                    <span>Communication</span>
+                    <span>{{ __('messaging.breadcrumb_communication') }}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
-                    <span class="text-slate-700">Notifier les clients</span>
+                    <span class="text-slate-700">{{ __('messaging.compose_breadcrumb') }}</span>
                 </nav>
-                <h1 class="text-[26px] font-black tracking-tight text-slate-900">Notifier les clients</h1>
-                <p class="text-[13px] text-slate-500">Envoyez un message ciblé à vos clients par push, e-mail ou
-                    WhatsApp.</p>
+                <h1 class="text-[26px] font-black tracking-tight text-slate-900">{{ __('messaging.compose_title') }}
+                </h1>
+                <p class="text-[13px] text-slate-500">{{ __('messaging.compose_subtitle') }}</p>
             </div>
             <a href="{{ route('messaging.history') }}"
                 class="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-[13.5px] font-extrabold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
@@ -293,7 +293,7 @@
                     <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8" />
                     <path d="M12 7v5l4 2" />
                 </svg>
-                Historique
+                {{ __('messaging.btn_history') }}
             </a>
         </div>
 
@@ -334,7 +334,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['total']) }}</div>
-                    <div class="lab">Total Clients</div>
+                    <div class="lab">{{ __('messaging.stat_total_clients') }}</div>
                 </div>
             </div>
             <div class="m-stat s-green">
@@ -345,7 +345,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['withEmail']) }}</div>
-                    <div class="lab">Avec e-mail</div>
+                    <div class="lab">{{ __('messaging.stat_with_email') }}</div>
                 </div>
             </div>
             <div class="m-stat s-violet">
@@ -356,7 +356,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['withPhone']) }}</div>
-                    <div class="lab">Avec téléphone</div>
+                    <div class="lab">{{ __('messaging.stat_with_phone') }}</div>
                 </div>
             </div>
             <div class="m-stat s-amber">
@@ -367,7 +367,7 @@
                     </svg></div>
                 <div class="meta">
                     <div class="val">{{ number_format($stats['active']) }}</div>
-                    <div class="lab">Clients actifs</div>
+                    <div class="lab">{{ __('messaging.stat_active_clients') }}</div>
                 </div>
             </div>
         </div>
@@ -383,31 +383,32 @@
                 {{-- Recipients --}}
                 <div class="m-panel p-5">
                     <div class="flex items-center justify-between">
-                        <span class="m-label !mb-0">Destinataires</span>
+                        <span class="m-label !mb-0">{{ __('messaging.label_recipients') }}</span>
                         <div class="flex items-center gap-3">
                             <button type="button" id="select-all"
-                                class="text-[11.5px] font-bold text-amber-600 hover:underline">Tout
-                                sélectionner</button>
+                                class="text-[11.5px] font-bold text-amber-600 hover:underline">{{ __('messaging.btn_select_all') }}</button>
                             <button type="button" id="select-none"
-                                class="text-[11.5px] font-bold text-slate-400 hover:underline">Aucun</button>
+                                class="text-[11.5px] font-bold text-slate-400 hover:underline">{{ __('messaging.btn_select_none') }}</button>
                         </div>
                     </div>
                     <div class="mt-3">
                         <x-select2 name="client_ids[]" id="client_ids" :multiple="true"
-                            placeholder="Choisir un ou plusieurs clients…" :options="$clients
+                            placeholder="{{ __('messaging.placeholder_clients') }}" :options="$clients
                                 ->mapWithKeys(
                                     fn($c) => [
                                         $c->id => $c->company_name . ($c->contact_name ? ' — ' . $c->contact_name : ''),
                                     ],
                                 )
-                                ->all()" wrapperClass="!mb-0" />
+                                ->all()"
+                            wrapperClass="!mb-0" />
                     </div>
-                    <p class="mt-2 m-counter"><span id="recipient-count">0</span> client(s) sélectionné(s)</p>
+                    <p class="mt-2 m-counter"><span id="recipient-count">0</span>
+                        {{ __('messaging.recipients_count') }}</p>
                 </div>
 
                 {{-- Channels --}}
                 <div class="m-panel p-5">
-                    <span class="m-label">Canaux d'envoi</span>
+                    <span class="m-label">{{ __('messaging.label_channels') }}</span>
                     <div class="ch-grid">
                         <label class="ch-card" data-channel="push">
                             <input type="checkbox" name="channels[]" value="push">
@@ -419,8 +420,8 @@
                                 </svg>
                             </span>
                             <span>
-                                <span class="ch-name">Push</span>
-                                <span class="ch-sub block">Notification in-app</span>
+                                <span class="ch-name">{{ __('messaging.channel_push_name') }}</span>
+                                <span class="ch-sub block">{{ __('messaging.channel_push_sub') }}</span>
                             </span>
                             <span class="ch-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"
                                     stroke-width="3.5">
@@ -438,8 +439,9 @@
                                 </svg>
                             </span>
                             <span>
-                                <span class="ch-name">E-mail</span>
-                                <span class="ch-sub block">{{ $stats['withEmail'] }} joignables</span>
+                                <span class="ch-name">{{ __('messaging.channel_email_name') }}</span>
+                                <span
+                                    class="ch-sub block">{{ str_replace(':count', $stats['withEmail'], __('messaging.channel_reachable')) }}</span>
                             </span>
                             <span class="ch-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"
                                     stroke-width="3.5">
@@ -456,8 +458,9 @@
                                 </svg>
                             </span>
                             <span>
-                                <span class="ch-name">WhatsApp</span>
-                                <span class="ch-sub block">{{ $stats['withPhone'] }} joignables</span>
+                                <span class="ch-name">{{ __('messaging.channel_whatsapp_name') }}</span>
+                                <span
+                                    class="ch-sub block">{{ str_replace(':count', $stats['withPhone'], __('messaging.channel_reachable')) }}</span>
                             </span>
                             <span class="ch-check"><svg viewBox="0 0 24 24" fill="none" stroke="#fff"
                                     stroke-width="3.5">
@@ -470,17 +473,18 @@
                 {{-- Message --}}
                 <div class="m-panel p-5 flex flex-col gap-4">
                     <div>
-                        <span class="m-label">Titre</span>
+                        <span class="m-label">{{ __('messaging.label_title') }}</span>
                         <input type="text" name="title" id="title" class="m-input" maxlength="150"
-                            placeholder="Ex : Nouvelle offre de fidélité" value="{{ old('title') }}" required>
+                            placeholder="{{ __('messaging.placeholder_title') }}" value="{{ old('title') }}"
+                            required>
                     </div>
                     <div>
                         <div class="flex items-center justify-between">
-                            <span class="m-label">Message</span>
+                            <span class="m-label">{{ __('messaging.label_message') }}</span>
                             <span class="m-counter"><span id="msg-count">0</span>/2000</span>
                         </div>
-                        <textarea name="message" id="message" class="m-textarea" maxlength="2000" placeholder="Rédigez votre message…"
-                            required>{{ old('message') }}</textarea>
+                        <textarea name="message" id="message" class="m-textarea" maxlength="2000"
+                            placeholder="{{ __('messaging.placeholder_message') }}" required>{{ old('message') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -488,7 +492,7 @@
             {{-- Right: preview + submit --}}
             <div class="flex flex-col gap-5">
                 <div class="m-panel p-5 lg:sticky lg:top-6">
-                    <span class="m-label">Aperçu</span>
+                    <span class="m-label">{{ __('messaging.label_preview') }}</span>
                     <div class="preview-box">
                         <div class="flex items-start gap-3">
                             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-amber-100">
@@ -499,17 +503,18 @@
                                 </svg>
                             </span>
                             <div class="min-w-0 flex-1">
-                                <p id="preview-title" class="text-[13.5px] font-bold text-slate-900 break-words">Titre
-                                    du message</p>
+                                <p id="preview-title" class="text-[13.5px] font-bold text-slate-900 break-words">
+                                    {{ __('messaging.preview_default_title') }}</p>
                                 <p id="preview-body"
-                                    class="mt-1 text-[12.5px] text-slate-500 break-words whitespace-pre-line">Le
-                                    contenu de votre message apparaîtra ici…</p>
+                                    class="mt-1 text-[12.5px] text-slate-500 break-words whitespace-pre-line">
+                                    {{ __('messaging.preview_default_body') }}</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="mt-4 flex flex-wrap gap-2" id="preview-channels">
-                        <span class="text-[11.5px] font-semibold text-slate-400">Aucun canal sélectionné</span>
+                        <span
+                            class="text-[11.5px] font-semibold text-slate-400">{{ __('messaging.preview_no_channel') }}</span>
                     </div>
 
                     <button type="submit" id="submit-btn"
@@ -519,9 +524,9 @@
                             <line x1="22" y1="2" x2="11" y2="13" />
                             <polygon points="22 2 15 22 11 13 2 9 22 2" />
                         </svg>
-                        Envoyer le message
+                        {{ __('messaging.btn_send') }}
                     </button>
-                    <p class="mt-2 text-center text-[11px] text-slate-400">Sélectionnez au moins un client et un canal.
+                    <p class="mt-2 text-center text-[11px] text-slate-400">{{ __('messaging.send_hint') }}
                     </p>
                 </div>
             </div>
@@ -570,14 +575,14 @@
                 }
 
                 function updatePreview() {
-                    previewT.textContent = titleEl.value.trim() || 'Titre du message';
-                    previewB.textContent = messageEl.value.trim() || 'Le contenu de votre message apparaîtra ici…';
+                    previewT.textContent = titleEl.value.trim() || '{{ __('messaging.preview_default_title') }}';
+                    previewB.textContent = messageEl.value.trim() || '{{ __('messaging.preview_default_body') }}';
                     msgCount.textContent = messageEl.value.length;
 
                     const chs = selectedChannels();
                     if (chs.length === 0) {
                         previewCh.innerHTML =
-                            '<span class="text-[11.5px] font-semibold text-slate-400">Aucun canal sélectionné</span>';
+                            '<span class="text-[11.5px] font-semibold text-slate-400">{{ __('messaging.preview_no_channel') }}</span>';
                     } else {
                         previewCh.innerHTML = chs.map(c => {
                             const m = CH_LABELS[c];

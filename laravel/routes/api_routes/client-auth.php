@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\ClientAuthController;
+use App\Http\Controllers\Api\Clients\ClientAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('client')->group(function () {
@@ -10,5 +10,7 @@ Route::prefix('client')->group(function () {
         Route::get('/me', [ClientAuthController::class, 'me'])->name('api.client.me');
         Route::post('/logout', [ClientAuthController::class, 'logout'])->name('api.client.logout');
         Route::post('/change-password', [ClientAuthController::class, 'changePassword'])->name('api.client.change-password');
+        Route::put('/update-info', [ClientAuthController::class, 'updateInfo'])->name('api.client.update-info');
+        Route::post('/update-picture', [ClientAuthController::class, 'updatePicture'])->name('api.client.update-picture');
     });
 });

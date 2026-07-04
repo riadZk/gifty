@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Client extends Authenticatable
+class Client extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, InteractsWithMedia;
 
     // ── Status constants ──────────────────────────────────────────────────────
     const STATUS_ACTIVE   = 'active';
@@ -108,5 +110,17 @@ class Client extends Authenticatable
     public function block(): void
     {
         $this->update(['status' => self::STATUS_BLOCKED]);
+    }
+
+    // ── Media ─────────────────────────────────────────────────────────────────
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('picture')->singleFile();
+    }
+
+    public function getPictureUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('picture') ?: null;
     }
 }

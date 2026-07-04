@@ -29,7 +29,12 @@
         $grad = clientGrad($client->company_name);
         $initials = strtoupper(substr($client->company_name, 0, 2));
         $statusClass = $client->status;
-        $statusLabel = ['active' => 'Actif', 'blocked' => 'Bloqué', 'inactive' => 'Inactif'][$client->status] ?? '—';
+        $statusLabel =
+            [
+                'active' => __('clients.status_active'),
+                'blocked' => __('clients.status_blocked'),
+                'inactive' => __('clients.status_inactive'),
+            ][$client->status] ?? '—';
         $pts = number_format((int) $client->points_balance, 0, ',', ' ');
         $delay = ($loop->index % 16) * 0.03;
     @endphp
@@ -41,7 +46,13 @@
         <a href="{{ route('clients.show', $client) }}" class="block p-4">
             {{-- Top row: avatar + name + status (top-right) --}}
             <div class="flex items-start gap-3 mb-3">
-                <div class="card-avatar" style="background:{{ $grad }}">{{ $initials }}</div>
+                @php $pictureUrl = $client->getFirstMediaUrl('picture'); @endphp
+                @if ($pictureUrl)
+                    <img src="{{ $pictureUrl }}" alt="{{ $client->company_name }}" class="card-avatar object-cover"
+                        style="background:{{ $grad }}">
+                @else
+                    <div class="card-avatar" style="background:{{ $grad }}">{{ $initials }}</div>
+                @endif
                 <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-1">
                         <p class="font-black text-slate-900 text-[13px] leading-tight truncate">
@@ -114,10 +125,10 @@
                     <span class="pcc-code">{{ $client->pcc_customer_code }}</span>
                 </div>
             @else
-                <span class="pcc-code text-slate-300">Pas de code PCC</span>
+                <span class="pcc-code text-slate-300">{{ __('clients.no_pcc_code') }}</span>
             @endif
             <a href="{{ route('clients.show', $client) }}" class="card-action view">
-                Voir
+                {{ __('clients.action_view') }}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-3 w-3">
                     <path d="m9 18 6-6-6-6" />
                 </svg>
@@ -128,7 +139,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-3 w-3">
                         <path d="m5 12 5 5L20 7" />
                     </svg>
-                    Activer
+                    {{ __('clients.action_activate') }}
                 </button>
             @elseif($client->status === 'blocked')
                 <button class="card-action act-btn unblock client-action" title="Débloquer" data-action="unblock"
@@ -137,7 +148,7 @@
                         <rect x="3" y="11" width="18" height="11" rx="2" />
                         <path d="M7 11V7a5 5 0 0 1 9.9-1" />
                     </svg>
-                    Débloquer
+                    {{ __('clients.action_unblock') }}
                 </button>
             @else
                 <button class="card-action act-btn block client-action" title="Bloquer" data-action="block"
@@ -147,7 +158,7 @@
                         <rect x="3" y="11" width="18" height="11" rx="2" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    Bloquer
+                    {{ __('clients.action_block') }}
                 </button>
             @endif
         </div>

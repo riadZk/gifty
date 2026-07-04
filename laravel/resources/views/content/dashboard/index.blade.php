@@ -12,105 +12,179 @@
     <div class="flex flex-col gap-5">
 
         {{-- ══════════════════════════════════════════
-             ROW 1 — 4 Stat cards
+             ROW 1 — 4 Stat cards with sparklines
         ══════════════════════════════════════════ --}}
-        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
             {{-- Clients inscrits --}}
-            <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange-50">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                        stroke-linejoin="round" class="h-5 w-5 text-orange-400">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                        <circle cx="12" cy="7" r="4" />
-                    </svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Clients inscrits</p>
-                    <p class="mt-0.5 text-[22px] font-black leading-tight text-slate-900">
-                        {{ number_format($totalClients, 0, ',', ' ') }}</p>
-                    <p class="mt-1 flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
+            <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-50">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-orange-400">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                    </div>
+                    <span
+                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                             class="h-3 w-3">
                             <path d="m18 15-6-6-6 6" />
                         </svg>
-                        +12% ce mois
-                    </p>
+                        +12%
+                    </span>
+                </div>
+                <p class="mt-4 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Clients inscrits</p>
+                <div class="mt-1 flex items-end justify-between gap-3">
+                    <p class="text-[24px] font-black leading-none text-slate-900">
+                        {{ number_format($totalClients, 0, ',', ' ') }}</p>
+                    <div class="h-9 w-24"><canvas id="spkClients"></canvas></div>
                 </div>
             </div>
 
-            {{-- Total Sales --}}
-            <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-emerald-50">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-500">
-                        <circle cx="9" cy="21" r="1" />
-                        <circle cx="20" cy="21" r="1" />
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-                    </svg>
+            {{-- Demandes bonus --}}
+            <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-blue-50">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-blue-500">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="9" y1="15" x2="15" y2="15" />
+                        </svg>
+                    </div>
+                    <span
+                        class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10.5px] font-bold text-amber-600">
+                        {{ $pendingDemandes }} en attente
+                    </span>
                 </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Total Sales (HT)</p>
-                    <p class="mt-0.5 text-[18px] font-black leading-tight text-slate-900">
+                <p class="mt-4 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Demandes bonus</p>
+                <div class="mt-1 flex items-end justify-between gap-3">
+                    <p class="text-[24px] font-black leading-none text-slate-900">
+                        {{ number_format($totalDemandes, 0, ',', ' ') }}</p>
+                    <div class="h-9 w-24"><canvas id="spkDemandes"></canvas></div>
+                </div>
+            </div>
+
+            {{-- Points clients --}}
+            <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-amber-50">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-amber-400">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    </div>
+                    <span
+                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            class="h-3 w-3">
+                            <path d="m18 15-6-6-6 6" />
+                        </svg>
+                        +11%
+                    </span>
+                </div>
+                <p class="mt-4 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Points clients</p>
+                <div class="mt-1 flex items-end justify-between gap-3">
+                    <p class="text-[24px] font-black leading-none text-slate-900">
+                        {{ number_format($totalPoints, 0, ',', ' ') }}</p>
+                    <div class="h-9 w-24"><canvas id="spkPoints"></canvas></div>
+                </div>
+            </div>
+
+            {{-- Total Sales (HT) --}}
+            <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between">
+                    <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-emerald-50">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-emerald-500">
+                            <circle cx="9" cy="21" r="1" />
+                            <circle cx="20" cy="21" r="1" />
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                        </svg>
+                    </div>
+                    <span
+                        class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            class="h-3 w-3">
+                            <path d="m18 15-6-6-6 6" />
+                        </svg>
+                        +8%
+                    </span>
+                </div>
+                <p class="mt-4 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Total Sales (HT)</p>
+                <div class="mt-1 flex items-end justify-between gap-3">
+                    <p class="text-[22px] font-black leading-none text-slate-900">
                         {{ $totalSales >= 1000000
                             ? number_format($totalSales / 1000000, 2, ',', ' ') . 'M'
                             : number_format($totalSales, 0, ',', ' ') }}
-                        MAD
+                        <span class="text-[12px] font-bold text-slate-400">MAD</span>
                     </p>
-                    <p class="mt-1 flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                            class="h-3 w-3">
-                            <path d="m18 15-6-6-6 6" />
-                        </svg>
-                        +8% ce mois
-                    </p>
+                    <div class="h-9 w-24"><canvas id="spkSales"></canvas></div>
                 </div>
             </div>
 
-            {{-- Total Points --}}
-            <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-amber-50">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-amber-400">
-                        <polygon
-                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </div>
+
+        {{-- ══════════════════════════════════════════
+             ROW 1b — Demandes status strip
+        ══════════════════════════════════════════ --}}
+        <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                <span class="grid h-10 w-10 place-items-center rounded-xl bg-amber-50 text-amber-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" class="h-5 w-5">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 7v5l3 2" />
                     </svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Total Points</p>
-                    <p class="mt-0.5 text-[18px] font-black leading-tight text-slate-900">
-                        {{ number_format($totalPoints, 0, ',', ' ') }} pts
-                    </p>
-                    <p class="mt-1 flex items-center gap-1 text-[11px] font-semibold text-emerald-600">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                            class="h-3 w-3">
-                            <path d="m18 15-6-6-6 6" />
-                        </svg>
-                        +11% ce mois
-                    </p>
+                </span>
+                <div>
+                    <p class="text-[20px] font-black leading-none text-slate-900">{{ $pendingDemandes }}</p>
+                    <p class="mt-1 text-[11px] font-semibold text-slate-400">En attente</p>
                 </div>
             </div>
-
-            {{-- Bonus à livrer --}}
-            <div class="flex items-center gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-purple-50">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5 text-purple-400">
-                        <polyline points="20 12 20 22 4 22 4 12" />
-                        <rect x="2" y="7" width="20" height="5" />
-                        <line x1="12" y1="22" x2="12" y2="7" />
-                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
-                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                <span class="grid h-10 w-10 place-items-center rounded-xl bg-blue-50 text-blue-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                        class="h-5 w-5">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
                     </svg>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Bonus à livrer</p>
-                    <p class="mt-0.5 text-[22px] font-black leading-tight text-slate-900">{{ $bonusLevels->count() }}
-                    </p>
-                    <p class="mt-1 text-[11px] font-medium text-slate-400">En attente</p>
+                </span>
+                <div>
+                    <p class="text-[20px] font-black leading-none text-slate-900">{{ $approvedDemandes }}</p>
+                    <p class="mt-1 text-[11px] font-semibold text-slate-400">Approuvées</p>
                 </div>
             </div>
-
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                <span class="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                        class="h-5 w-5">
+                        <rect x="1" y="3" width="15" height="13" />
+                        <path d="M16 8h4l3 3v5h-7V8z" />
+                        <circle cx="5.5" cy="18.5" r="2.5" />
+                        <circle cx="18.5" cy="18.5" r="2.5" />
+                    </svg>
+                </span>
+                <div>
+                    <p class="text-[20px] font-black leading-none text-slate-900">{{ $deliveredDemandes }}</p>
+                    <p class="mt-1 text-[11px] font-semibold text-slate-400">Livrées</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                <span class="grid h-10 w-10 place-items-center rounded-xl bg-red-50 text-red-500">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+                        class="h-5 w-5">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M15 9l-6 6M9 9l6 6" />
+                    </svg>
+                </span>
+                <div>
+                    <p class="text-[20px] font-black leading-none text-slate-900">{{ $rejectedDemandes }}</p>
+                    <p class="mt-1 text-[11px] font-semibold text-slate-400">Rejetées</p>
+                </div>
+            </div>
         </div>
 
         {{-- ══════════════════════════════════════════
@@ -137,19 +211,39 @@
                     </div>
                 </div>
 
-                {{-- Points bar chart --}}
+                {{-- Top clients par points --}}
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
                     <div class="mb-4 flex items-center justify-between">
-                        <h3 class="text-[14px] font-bold text-slate-800">Points cumulés</h3>
-                        <select
-                            class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-[12px] font-semibold text-slate-600 focus:border-yellow-400 focus:outline-none">
-                            <option>Mensuel</option>
-                            <option>Hebdomadaire</option>
-                            <option>Annuel</option>
-                        </select>
+                        <h3 class="text-[14px] font-bold text-slate-800">Top clients par points</h3>
+                        <a href="{{ route('clients') }}"
+                            class="text-[12px] font-semibold text-blue-500 transition-colors hover:text-blue-700">Voir
+                            tout</a>
                     </div>
-                    <div class="dash-chart-wrap">
-                        <canvas id="pointsChart"></canvas>
+                    @php $maxPts = max(1, optional($topClients->first())->points_balance ?? 1); @endphp
+                    <div class="flex flex-col gap-3.5">
+                        @forelse($topClients as $i => $client)
+                            <div class="flex items-center gap-3">
+                                <span
+                                    class="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-amber-50 text-[11px] font-black text-amber-600">
+                                    {{ strtoupper(substr($client->company_name, 0, 2)) }}
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <p class="truncate text-[12.5px] font-semibold text-slate-800">
+                                            {{ $client->company_name }}</p>
+                                        <p class="shrink-0 text-[12px] font-bold text-slate-700">
+                                            {{ number_format($client->points_balance, 0, ',', ' ') }} pts</p>
+                                    </div>
+                                    <div class="mt-1.5 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                                        <div class="h-full rounded-full bg-yellow-400"
+                                            style="width: {{ max(4, round(($client->points_balance / $maxPts) * 100)) }}%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="py-4 text-center text-[12px] text-slate-400">Aucun client</p>
+                        @endforelse
                     </div>
                 </div>
 
@@ -157,6 +251,39 @@
 
             {{-- ── Right sidebar (1/3) ── --}}
             <div class="flex flex-col gap-5">
+
+                {{-- Demandes par statut (donut) --}}
+                <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                    <div class="mb-2 flex items-center justify-between">
+                        <h3 class="text-[14px] font-bold text-slate-800">Demandes par statut</h3>
+                        <a href="{{ route('demandes.index') }}"
+                            class="text-[12px] font-semibold text-blue-500 transition-colors hover:text-blue-700">Voir
+                            tout</a>
+                    </div>
+                    <div class="relative mx-auto h-44 w-44">
+                        <canvas id="demandesChart"></canvas>
+                        <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                            <span
+                                class="text-[22px] font-black leading-none text-slate-900">{{ $totalDemandes }}</span>
+                            <span
+                                class="text-[10.5px] font-semibold uppercase tracking-wide text-slate-400">Demandes</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-2 text-[11.5px]">
+                        <span class="flex items-center gap-1.5 font-semibold text-slate-600"><span
+                                class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>En attente <span
+                                class="ml-auto text-slate-400">{{ $pendingDemandes }}</span></span>
+                        <span class="flex items-center gap-1.5 font-semibold text-slate-600"><span
+                                class="h-2.5 w-2.5 rounded-full bg-blue-500"></span>Approuvées <span
+                                class="ml-auto text-slate-400">{{ $approvedDemandes }}</span></span>
+                        <span class="flex items-center gap-1.5 font-semibold text-slate-600"><span
+                                class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span>Livrées <span
+                                class="ml-auto text-slate-400">{{ $deliveredDemandes }}</span></span>
+                        <span class="flex items-center gap-1.5 font-semibold text-slate-600"><span
+                                class="h-2.5 w-2.5 rounded-full bg-red-400"></span>Rejetées <span
+                                class="ml-auto text-slate-400">{{ $rejectedDemandes }}</span></span>
+                    </div>
+                </div>
 
                 {{-- Notifications récentes --}}
                 <div class="flex-1 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
@@ -247,7 +374,81 @@
         </div>
 
         {{-- ══════════════════════════════════════════
-             ROW 3 — Recent clients table
+             ROW 3 — Recent demandes table
+        ══════════════════════════════════════════ --}}
+        <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                <h3 class="text-[14px] font-bold text-slate-800">Dernières demandes de bonus</h3>
+                <a href="{{ route('demandes.index') }}"
+                    class="text-[12px] font-semibold text-blue-500 transition-colors hover:text-blue-700">Voir tout</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-100 bg-slate-50/60">
+                            <th
+                                class="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Référence</th>
+                            <th
+                                class="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Client</th>
+                            <th
+                                class="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Bonus</th>
+                            <th
+                                class="px-6 py-3 text-right text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Points</th>
+                            <th
+                                class="px-6 py-3 text-left text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Date</th>
+                            <th
+                                class="px-6 py-3 text-center text-[11px] font-bold uppercase tracking-wide text-slate-400">
+                                Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($recentDemandes as $demande)
+                            <tr class="transition-colors hover:bg-slate-50/50">
+                                <td class="px-6 py-3.5 text-[12.5px] font-bold text-slate-700">
+                                    {{ $demande->demande_key }}</td>
+                                <td class="px-6 py-3.5 text-[12.5px] font-semibold text-slate-800">
+                                    {{ $demande->client->company_name ?? '—' }}
+                                </td>
+                                <td class="px-6 py-3.5 text-[12.5px] text-slate-500">
+                                    {{ $demande->bonusLevel->reward_name ?? '—' }}
+                                </td>
+                                <td class="px-6 py-3.5 text-right text-[13px] font-semibold text-slate-800">
+                                    {{ number_format($demande->points_required, 0, ',', ' ') }} pts
+                                </td>
+                                <td class="px-6 py-3.5 text-[12.5px] text-slate-500">
+                                    {{ $demande->requested_at ? $demande->requested_at->format('d/m/Y') : '—' }}
+                                </td>
+                                <td class="px-6 py-3.5 text-center">
+                                    <span @class([
+                                        'inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-bold',
+                                        'bg-amber-50 text-amber-600' => $demande->status === 'pending',
+                                        'bg-blue-50 text-blue-600' => $demande->status === 'approved',
+                                        'bg-emerald-50 text-emerald-600' => $demande->status === 'delivered',
+                                        'bg-red-50 text-red-500' => $demande->status === 'rejected',
+                                    ])>
+                                        {{ ucfirst($demande->status) }}
+                                    </span>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-10 text-center text-[12px] text-slate-400">
+                                    Aucune demande enregistrée
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {{-- ══════════════════════════════════════════
+             ROW 4 — Recent clients table
         ══════════════════════════════════════════ --}}
         <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
             <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
@@ -418,16 +619,19 @@
                     },
                 });
 
-                // ── Points bar chart ──────────────────────────────────────────
-                new Chart(document.getElementById('pointsChart'), {
-                    type: 'bar',
+                // ── Sparklines (stat cards) ───────────────────────────────────
+                const sparkBase = (color, fill) => ({
+                    type: 'line',
                     data: {
-                        labels,
+                        labels: ['', '', '', '', '', '', ''],
                         datasets: [{
-                            data: [60000, 130000, 210000, 300000, 400000, 508000],
-                            backgroundColor: yellow,
-                            borderRadius: 6,
-                            borderSkipped: false,
+                            data: [],
+                            borderColor: color,
+                            backgroundColor: fill,
+                            fill: true,
+                            tension: 0.45,
+                            borderWidth: 2,
+                            pointRadius: 0,
                         }],
                     },
                     options: {
@@ -438,24 +642,92 @@
                                 display: false
                             },
                             tooltip: {
-                                callbacks: {
-                                    label: ctx => ' ' + new Intl.NumberFormat('fr-MA').format(ctx.parsed.y) +
-                                        ' pts',
-                                },
-                            },
+                                enabled: false
+                            }
                         },
                         scales: {
-                            ...baseScales,
-                            y: {
-                                ...baseScales.y,
-                                ticks: {
-                                    ...baseScales.y.ticks,
-                                    callback: v => v >= 1000 ? (v / 1000) + 'k' : v,
-                                },
+                            x: {
+                                display: false
                             },
+                            y: {
+                                display: false
+                            }
+                        },
+                        elements: {
+                            line: {
+                                borderCapStyle: 'round'
+                            }
                         },
                     },
                 });
+
+                const sparks = {
+                    spkClients: {
+                        color: '#fb923c',
+                        fill: 'rgba(251,146,60,0.12)',
+                        data: [8, 11, 9, 14, 13, 18, 21]
+                    },
+                    spkDemandes: {
+                        color: '#3b82f6',
+                        fill: 'rgba(59,130,246,0.12)',
+                        data: [3, 5, 4, 7, 6, 9, 11]
+                    },
+                    spkPoints: {
+                        color: '#FFC60B',
+                        fill: 'rgba(255,198,11,0.14)',
+                        data: [6, 9, 13, 11, 18, 22, 26]
+                    },
+                    spkSales: {
+                        color: '#10b981',
+                        fill: 'rgba(16,185,129,0.12)',
+                        data: [5, 8, 7, 12, 14, 19, 23]
+                    },
+                };
+
+                Object.entries(sparks).forEach(([id, cfg]) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const conf = sparkBase(cfg.color, cfg.fill);
+                    conf.data.datasets[0].data = cfg.data;
+                    new Chart(el, conf);
+                });
+
+                // ── Demandes par statut (donut) ───────────────────────────────
+                const demandesEl = document.getElementById('demandesChart');
+                if (demandesEl) {
+                    const dData = [
+                        {{ (int) $pendingDemandes }},
+                        {{ (int) $approvedDemandes }},
+                        {{ (int) $deliveredDemandes }},
+                        {{ (int) $rejectedDemandes }},
+                    ];
+                    const dTotal = dData.reduce((a, b) => a + b, 0);
+                    new Chart(demandesEl, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['En attente', 'Approuvées', 'Livrées', 'Rejetées'],
+                            datasets: [{
+                                data: dTotal === 0 ? [1, 1, 1, 1] : dData,
+                                backgroundColor: ['#fbbf24', '#3b82f6', '#10b981', '#f87171'],
+                                borderWidth: 0,
+                                hoverOffset: 4,
+                            }],
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '72%',
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    enabled: dTotal !== 0
+                                },
+                            },
+                        },
+                    });
+                }
             })();
         </script>
     @endpush

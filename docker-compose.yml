@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www
     volumes:
-      - ./laravel:/var/www          # ton code Laravel ici
+      - ./laravel:/var/www # ton code Laravel ici
       - pcc_laravel_vendor:/var/www/vendor
       - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
     environment:
@@ -31,7 +31,7 @@ services:
     container_name: pcc_nginx
     restart: unless-stopped
     ports:
-      - "8000:80"        # http://localhost:8000
+      - "8000:80" # http://localhost:8000
     volumes:
       - ./laravel:/var/www
       - ./nginx/conf.d:/etc/nginx/conf.d
@@ -48,17 +48,17 @@ services:
     container_name: pcc_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"      # accès depuis TablePlus / DBeaver / Adminer
+      - "5432:5432" # accès depuis TablePlus / DBeaver / Adminer
     environment:
       POSTGRES_DB: pcc_fidelite
       POSTGRES_USER: pcc_user
       POSTGRES_PASSWORD: pcc_password_2026
     volumes:
-      - pcc_postgres_data:/var/lib/postgresql/data   # données persistantes
+      - pcc_postgres_data:/var/lib/postgresql/data # données persistantes
     networks:
       - pcc_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U pcc_user -d pcc_fidelite"]
+      test: [ "CMD-SHELL", "pg_isready -U pcc_user -d pcc_fidelite" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -76,7 +76,22 @@ services:
       - pcc_network
 
   # ─────────────────────────────────────────
-  # 📡 Laravel Reverb — WebSocket Server
+  # � Node.js — Vite Dev Server
+  # ─────────────────────────────────────────
+  node:
+    image: node:22-alpine
+    container_name: pcc_node
+    working_dir: /var/www
+    volumes:
+      - ./laravel:/var/www
+    ports:
+      - "5173:5173" # http://localhost:5173 (Vite HMR)
+    command: sh -c "npm install && npm run dev"
+    networks:
+      - pcc_network
+
+  # ─────────────────────────────────────────
+  # �📡 Laravel Reverb — WebSocket Server
   # ─────────────────────────────────────────
   reverb:
     build:
@@ -87,7 +102,7 @@ services:
     working_dir: /var/www
     command: php artisan reverb:start --host=0.0.0.0 --port=8080 --no-interaction
     ports:
-      - "8080:8080"      # ws://localhost:8080
+      - "8080:8080" # ws://localhost:8080
     volumes:
       - ./laravel:/var/www
       - pcc_laravel_vendor:/var/www/vendor

@@ -29,7 +29,12 @@
         $grad = clientGrad($client->company_name);
         $initials = strtoupper(substr($client->company_name, 0, 2));
         $sc = ['active' => 'active', 'blocked' => 'blocked', 'inactive' => 'inactive'][$client->status] ?? 'inactive';
-        $sl = ['active' => 'Actif', 'blocked' => 'Bloqué', 'inactive' => 'Inactif'][$client->status] ?? '—';
+        $sl =
+            [
+                'active' => __('clients.status_active'),
+                'blocked' => __('clients.status_blocked'),
+                'inactive' => __('clients.status_inactive'),
+            ][$client->status] ?? '—';
         $statusStyles = [
             'active' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
             'blocked' => 'bg-red-50 text-red-700 border-red-200',
@@ -49,10 +54,17 @@
         {{-- Client name + avatar --}}
         <td class="px-5 py-4">
             <a href="{{ route('clients.show', $client) }}" class="flex items-center gap-3.5">
-                <div class="h-10 w-10 shrink-0 rounded-[13px] grid place-items-center text-[13px] font-black text-white shadow-sm"
-                    style="background:{{ $grad }}">
-                    {{ $initials }}
-                </div>
+                @php $pictureUrl = $client->getFirstMediaUrl('picture'); @endphp
+                @if ($pictureUrl)
+                    <img src="{{ $pictureUrl }}" alt="{{ $client->company_name }}"
+                        class="h-10 w-10 shrink-0 rounded-[13px] object-cover shadow-sm"
+                        style="background:{{ $grad }}">
+                @else
+                    <div class="h-10 w-10 shrink-0 rounded-[13px] grid place-items-center text-[13px] font-black text-white shadow-sm"
+                        style="background:{{ $grad }}">
+                        {{ $initials }}
+                    </div>
+                @endif
                 <div class="min-w-0">
                     <p
                         class="text-[13px] font-black text-slate-900 truncate group-hover:text-blue-600 transition-colors">
@@ -132,7 +144,7 @@
         <td class="px-5 py-4">
             <div class="flex items-center justify-end gap-2">
                 <a href="{{ route('clients.show', $client) }}" class="card-action view">
-                    Voir
+                    {{ __('clients.action_view') }}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="h-3 w-3">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
@@ -144,7 +156,7 @@
                             class="h-3 w-3">
                             <path d="m5 12 5 5L20 7" />
                         </svg>
-                        Activer
+                        {{ __('clients.action_activate') }}
                     </button>
                 @elseif ($client->status === 'blocked')
                     <button class="card-action act-btn unblock client-action" data-action="unblock"
@@ -154,7 +166,7 @@
                             <rect x="3" y="11" width="18" height="11" rx="2" />
                             <path d="M7 11V7a5 5 0 0 1 9.9-1" />
                         </svg>
-                        Débloquer
+                        {{ __('clients.action_unblock') }}
                     </button>
                 @else
                     <button class="card-action act-btn block client-action" data-action="block"
@@ -164,7 +176,7 @@
                             <rect x="3" y="11" width="18" height="11" rx="2" />
                             <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                         </svg>
-                        Bloquer
+                        {{ __('clients.action_block') }}
                     </button>
                 @endif
             </div>

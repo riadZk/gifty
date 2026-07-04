@@ -1,0 +1,111 @@
+# Override production — à utiliser avec :
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml -f docker-compose.traefik.yml up -d
+# Les secrets sont chargés depuis ./.env (substitution Compose).
+
+name: gifty
+
+services:
+  app:
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  nginx:
+    ports: !reset [] # Traefik gère l'ingress 80/443
+
+  db:
+    ports: !reset [] # ne pas exposer PostgreSQL sur Internet
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+  redis:
+    ports: !reset [] # ne pas exposer Redis sur Internet
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD} --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${REDIS_PASSWORD} ping | grep -q PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  reverb:
+    ports: !reset [] # exposé via Traefik (PathPrefix /app/)
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f 'reverb:start' > /dev/null || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ─────────────────────────────────────────
+  # ⚙️  Queue worker (Redis)
+  # ─────────────────────────────────────────
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: pcc_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+    volumes:
+      - ./laravel:/var/www
+      - pcc_laravel_vendor:/var/www/vendor
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    networks:
+      - pcc_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f 'queue:work' > /dev/null || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ─────────────────────────────────────────
+  # ⏰ Scheduler
+  # ─────────────────────────────────────────
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: pcc_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    command: php artisan schedule:work
+    volumes:
+      - ./laravel:/var/www
+      - pcc_laravel_vendor:/var/www/vendor
+      - ./docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    networks:
+      - pcc_network
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f 'schedule:work' > /dev/null || exit 1" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

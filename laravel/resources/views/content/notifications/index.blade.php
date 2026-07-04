@@ -47,8 +47,24 @@
 
     @php
         $typeCfg = [
-            'new_bonus_request' => ['Demande bonus', 'bg-violet-100 text-violet-700', 'bg-violet-100', '#7c3aed'],
-            'new_client_registered' => ['Nouveau client', 'bg-blue-100 text-blue-700', 'bg-blue-100', '#2563eb'],
+            'new_bonus_request' => [
+                __('notifications.type_bonus'),
+                'bg-violet-100 text-violet-700',
+                'bg-violet-100',
+                '#7c3aed',
+            ],
+            'new_client_registered' => [
+                __('notifications.type_client'),
+                'bg-blue-100 text-blue-700',
+                'bg-blue-100',
+                '#2563eb',
+            ],
+            'campaign_processed' => [
+                __('notifications.type_campaign'),
+                'bg-amber-100 text-amber-700',
+                'bg-amber-100',
+                '#d97706',
+            ],
         ];
     @endphp
 
@@ -57,12 +73,13 @@
         {{-- ── Header ── --}}
         <div class="au flex flex-wrap items-center justify-between gap-3">
             <div>
-                <h1 class="text-[22px] font-black tracking-tight text-slate-900 leading-tight">Notifications</h1>
+                <h1 class="text-[22px] font-black tracking-tight text-slate-900 leading-tight">
+                    {{ __('notifications.title') }}</h1>
                 <p class="text-[12.5px] text-slate-400 mt-0.5">
-                    {{ $notifications->total() }} notification{{ $notifications->total() !== 1 ? 's' : '' }}
+                    {{ trans_choice('notifications.count', $notifications->total()) }}
                     @if ($unreadCount > 0)
-                        &nbsp;·&nbsp;<span class="font-bold text-amber-500">{{ $unreadCount }} non
-                            lue{{ $unreadCount > 1 ? 's' : '' }}</span>
+                        &nbsp;·&nbsp;<span
+                            class="font-bold text-amber-500">{{ trans_choice('notifications.unread_count', $unreadCount) }}</span>
                     @endif
                 </p>
             </div>
@@ -75,7 +92,7 @@
                             class="h-3.5 w-3.5">
                             <path d="M20 6 9 17l-5-5" />
                         </svg>
-                        Tout marquer lu
+                        {{ __('notifications.mark_all_read') }}
                     </button>
                 </form>
             @endif
@@ -95,12 +112,13 @@
                                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                             </svg>
                         </div>
-                        <span class="text-[12px] font-bold text-slate-500 whitespace-nowrap">Filtres</span>
+                        <span
+                            class="text-[12px] font-bold text-slate-500 whitespace-nowrap">{{ __('notifications.filters') }}</span>
                     </div>
 
                     {{-- Status chips --}}
                     <div class="flex items-center gap-1.5">
-                        @foreach (['' => 'Tous', 'unread' => 'Non lu', 'read' => 'Lu'] as $val => $lbl)
+                        @foreach (['' => __('notifications.filter_all'), 'unread' => __('notifications.filter_unread'), 'read' => __('notifications.filter_read')] as $val => $lbl)
                             <a href="{{ request()->fullUrlWithQuery(['status' => $val ?: null]) }}"
                                 class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-[11.5px] font-bold transition-all
                         {{ request('status', '') === $val
@@ -131,7 +149,7 @@
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
                             <x-datepicker id="date_from" name="date_from" placeholder="Du…" :value="request('date_from')"
-                                dateFormat="Y-m-d"
+                                dateFormat="Y-m-d" style="border: 1px solid;"
                                 class="!h-8 !w-32 !pl-8 !pr-2 !text-[12px] !rounded-xl !border-slate-200 !bg-slate-50" />
                         </div>
                         <span class="text-[11px] font-semibold text-slate-300">→</span>
@@ -144,7 +162,7 @@
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
                             <x-datepicker id="date_to" name="date_to" placeholder="Au…" :value="request('date_to')"
-                                dateFormat="Y-m-d"
+                                dateFormat="Y-m-d" style="border: 1px solid;"
                                 class="!h-8 !w-32 !pl-8 !pr-2 !text-[12px] !rounded-xl !border-slate-200 !bg-slate-50" />
                         </div>
                     </div>
@@ -158,7 +176,7 @@
                                     class="h-3 w-3">
                                     <path d="M18 6 6 18M6 6l12 12" />
                                 </svg>
-                                Effacer
+                                {{ __('notifications.clear') }}
                             </a>
                         @endif
                         <button type="submit"
@@ -168,7 +186,7 @@
                                 <circle cx="11" cy="11" r="8" />
                                 <path d="m21 21-4.35-4.35" />
                             </svg>
-                            Appliquer
+                            {{ __('notifications.apply') }}
                         </button>
                     </div>
                 </div>
@@ -176,7 +194,7 @@
         </div>
 
         {{-- ── List ── --}}
-        <div class="au d2 flex flex-col gap-3">
+        <div class="au d2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
             @forelse ($notifications as $i => $n)
                 @php
@@ -184,7 +202,7 @@
                     $data = is_array($n->data) ? $n->data : (array) $n->data;
                     $type = $data['type'] ?? '';
                     [$typeLabel, $typeBadge, $iconBg, $iconColor] = $typeCfg[$type] ?? [
-                        'Système',
+                        __('notifications.type_system'),
                         'bg-slate-100 text-slate-500',
                         'bg-slate-100',
                         '#64748b',
@@ -192,24 +210,22 @@
                     $url = $data['url'] ?? null;
                 @endphp
 
-                <div class="group relative overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-200
-            {{ $isRead ? 'border-slate-200 hover:border-slate-300 hover:shadow-md' : 'border-amber-200 shadow-amber-100/60 hover:shadow-md' }}"
-                    style="animation:fadeUp .3s ease {{ $i * 0.04 }}s both;">
+                <div class="group relative {{ !$loop->last ? 'border-b border-slate-100' : '' }}"
+                    style="{{ !$isRead ? 'background:#fffbf0a1;' : '' }} animation:fadeUp .3s ease {{ $i * 0.04 }}s both;">
 
-                    {{-- Unread accent bar --}}
-                    {{-- @if (!$isRead)
-                        <div class="absolute inset-y-0 left-0 w-1 rounded-l-2xl bg-amber-400"></div>
-                    @endif --}}
+                    {{-- Unread left bar --}}
+                    @if (!$isRead)
+                        <div class="absolute inset-y-0 left-0 w-[3px] rounded-r bg-amber-400"></div>
+                    @endif
 
-                    <div class="flex items-start gap-4 px-5 py-4 {{ !$isRead || $url ? 'cursor-pointer' : '' }}"
+                    <div class="flex items-center gap-3 px-5 py-3 {{ !$isRead || $url ? 'cursor-pointer' : '' }} hover:bg-slate-50/70 transition-colors"
                         onclick="openNotif('{{ route('notifications.markSingle', $n->id) }}', '{{ $url }}')">
 
                         {{-- Icon --}}
-                        <div
-                            class="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-2xl {{ $iconBg }}">
+                        <div class="grid h-9 w-9 shrink-0 place-items-center rounded-xl {{ $iconBg }}">
                             @if ($type === 'new_bonus_request')
                                 <svg viewBox="0 0 24 24" fill="none" stroke="{{ $iconColor }}"
-                                    stroke-width="1.9" class="h-5 w-5">
+                                    stroke-width="1.9" class="h-4 w-4">
                                     <polyline points="20 12 20 22 4 22 4 12" />
                                     <rect x="2" y="7" width="20" height="5" />
                                     <line x1="12" y1="22" x2="12" y2="7" />
@@ -218,15 +234,21 @@
                                 </svg>
                             @elseif($type === 'new_client_registered')
                                 <svg viewBox="0 0 24 24" fill="none" stroke="{{ $iconColor }}"
-                                    stroke-width="1.9" class="h-5 w-5">
+                                    stroke-width="1.9" class="h-4 w-4">
                                     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                                     <circle cx="9" cy="7" r="4" />
                                     <line x1="19" y1="8" x2="19" y2="14" />
                                     <line x1="22" y1="11" x2="16" y2="11" />
                                 </svg>
+                            @elseif($type === 'campaign_processed')
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"
+                                    fill="{{ $iconColor }}" class="h-4 w-4">
+                                    <path
+                                        d="M568.4 37.7C578.2 34.2 589 36.7 596.4 44C603.8 51.3 606.2 62.2 602.7 72L424.7 568.9C419.7 582.8 406.6 592 391.9 592C377.7 592 364.9 583.4 359.6 570.3L295.4 412.3C290.9 401.3 292.9 388.7 300.6 379.7L395.1 267.3C400.2 261.2 399.8 252.3 394.2 246.7C388.6 241.1 379.6 240.7 373.6 245.8L261.2 340.1C252.1 347.7 239.6 349.7 228.6 345.3L70.1 280.8C57 275.5 48.4 262.7 48.4 248.5C48.4 233.8 57.6 220.7 71.5 215.7L568.4 37.7z" />
+                                </svg>
                             @else
                                 <svg viewBox="0 0 24 24" fill="none" stroke="{{ $iconColor }}"
-                                    stroke-width="1.9" class="h-5 w-5">
+                                    stroke-width="1.9" class="h-4 w-4">
                                     <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
                                     <path d="M13.7 21a2 2 0 0 1-3.4 0" />
                                 </svg>
@@ -235,63 +257,50 @@
 
                         {{-- Content --}}
                         <div class="flex-1 min-w-0">
-                            <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <div class="flex items-center gap-2 mb-0.5">
                                 <span
-                                    class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10.5px] font-bold {{ $typeBadge }}">
+                                    class="inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-bold {{ $typeBadge }}">
                                     {{ $typeLabel }}
                                 </span>
                                 @if (!$isRead)
-                                    <span
-                                        class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10.5px] font-bold text-amber-700">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>Non lue
-                                    </span>
+                                    <span class="h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0"></span>
                                 @endif
                             </div>
                             <p
-                                class="text-[13px] leading-snug {{ $isRead ? 'font-medium text-slate-600' : 'font-bold text-slate-900' }}">
-                                {{ $data['message'] ?? 'Notification' }}
+                                class="text-[12.5px] leading-snug truncate {{ $isRead ? 'text-slate-500' : 'font-semibold text-slate-800' }}">
+                                {{ $data['message'] ?? __('notifications.fallback') }}
                             </p>
                             @if (!empty($data['description']))
-                                <p class="mt-0.5 text-[12px] text-slate-400">{{ $data['description'] }}</p>
+                                <p class="text-[11.5px] text-slate-400 truncate">{{ $data['description'] }}</p>
                             @endif
-                            <p class="mt-1.5 flex items-center gap-1.5 text-[11px] text-slate-400">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    class="h-3 w-3 shrink-0">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 6v6l4 2" />
-                                </svg>
-                                {{ $n->created_at->diffForHumans() }}
-                                <span class="text-slate-300">·</span>
-                                {{ $n->created_at->format('d M Y, H:i') }}
-                            </p>
                         </div>
 
-                        {{-- Actions --}}
-                        <div class="flex shrink-0 flex-col items-end gap-2 ml-2">
+                        {{-- Right: time + arrow --}}
+                        <div class="shrink-0 flex flex-col items-end gap-1 ml-1">
+                            <span
+                                class="text-[11px] {{ $isRead ? 'text-slate-400' : 'text-amber-500 font-semibold' }} whitespace-nowrap">
+                                {{ $n->created_at->diffForHumans() }}
+                            </span>
                             @if ($url)
-                                <span
-                                    class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-300 group-hover:text-slate-500 transition-colors">
-                                    Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2.5" class="h-3 w-3">
-                                        <path d="M5 12h14M12 5l7 7-7 7" />
-                                    </svg>
-                                </span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    class="h-3.5 w-3.5 text-slate-300 group-hover:text-slate-500 transition-colors">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
                             @endif
                         </div>
                     </div>
                 </div>
 
             @empty
-                <div
-                    class="flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white py-20 shadow-sm">
-                    <div class="grid h-16 w-16 place-items-center rounded-2xl bg-slate-100">
+                <div class="flex flex-col items-center gap-3 py-20">
+                    <div class="grid h-14 w-14 place-items-center rounded-2xl bg-slate-100">
                         <svg viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.4"
-                            class="h-8 w-8">
+                            class="h-7 w-7">
                             <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
                             <path d="M13.7 21a2 2 0 0 1-3.4 0" />
                         </svg>
                     </div>
-                    <p class="text-[14px] font-bold text-slate-400">Aucune notification trouvée</p>
+                    <p class="text-[13.5px] font-bold text-slate-400">{{ __('notifications.not_found') }}</p>
                     @if (request()->hasAny(['status', 'date_from', 'date_to']))
                         <a href="{{ route('notifications.all') }}"
                             class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2 text-[12px] font-semibold text-slate-500 hover:bg-slate-50 transition">
@@ -299,7 +308,7 @@
                                 class="h-3.5 w-3.5">
                                 <path d="M18 6 6 18M6 6l12 12" />
                             </svg>
-                            Réinitialiser les filtres
+                            {{ __('notifications.reset_filters') }}
                         </a>
                     @endif
                 </div>
@@ -310,8 +319,8 @@
         @if ($notifications->hasPages())
             <div class="au d3 flex items-center justify-between text-[12px] text-slate-500">
                 <span>
-                    Page {{ $notifications->currentPage() }} / {{ $notifications->lastPage() }}
-                    &nbsp;·&nbsp;{{ $notifications->total() }} résultat{{ $notifications->total() !== 1 ? 's' : '' }}
+                    {{ __('notifications.page_info', ['current' => $notifications->currentPage(), 'last' => $notifications->lastPage()]) }}
+                    &nbsp;·&nbsp;{{ trans_choice('notifications.results', $notifications->total()) }}
                 </span>
                 <div class="flex items-center gap-1">
                     @if ($notifications->onFirstPage())

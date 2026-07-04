@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\ClientRegistrationApiController;
+use App\Http\Controllers\Api\Clients\ClientRegistrationApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('clients')->group(function () {

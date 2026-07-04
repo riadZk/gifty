@@ -194,7 +194,7 @@
         }
     </style>
 
-    <div class="flex gap-6">
+    <div class="mx-auto max-w-[110rem] flex gap-6">
 
         {{-- Sidebar --}}
         @include('content.config._sidebar')
@@ -206,13 +206,14 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <nav class="flex items-center gap-1.5 text-[11.5px] font-medium text-slate-400">
-                        <span>Configuration</span>
+                        <span>{{ __('config.breadcrumb') }}</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                             <path d="m9 18 6-6-6-6" />
                         </svg>
-                        <span class="text-slate-600">Niveaux de bonus</span>
+                        <span class="text-slate-600">{{ __('config.levels_page_title') }}</span>
                     </nav>
-                    <h1 class="mt-1 text-[22px] font-black tracking-tight text-slate-900">Niveaux de bonus</h1>
+                    <h1 class="mt-1 text-[22px] font-black tracking-tight text-slate-900">
+                        {{ __('config.levels_page_title') }}</h1>
                 </div>
                 <button type="button" onclick="openModal()"
                     class="inline-flex h-9 items-center gap-2 rounded-xl bg-amber-400 px-4 text-[12.5px] font-bold text-slate-900 shadow-sm transition hover:bg-amber-500">
@@ -220,7 +221,7 @@
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
-                    Ajouter un niveau
+                    {{ __('config.levels_add_btn') }}
                 </button>
             </div>
 
@@ -250,12 +251,14 @@
                                 @if ($level->is_active)
                                     <span
                                         class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Actif
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ __('config.levels_active') }}
                                     </span>
                                 @else
                                     <span
                                         class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span> Inactif
+                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
+                                        {{ __('config.levels_inactive') }}
                                     </span>
                                 @endif
                             </div>
@@ -263,7 +266,7 @@
                                 <span
                                     class="font-semibold text-amber-600">{{ number_format((int) $level->required_points, 0, ',', ' ') }}
                                     pts</span>
-                                requis &nbsp;·&nbsp; {{ $level->reward_name }}
+                                {{ __('config.levels_pts_required') }} &nbsp;·&nbsp; {{ $level->reward_name }}
                             </p>
                             @if ($level->reward_description)
                                 <p class="mt-0.5 text-[12px] text-slate-400">{{ $level->reward_description }}</p>
@@ -302,8 +305,8 @@
                                 <rect x="2" y="7" width="20" height="5" />
                             </svg>
                         </span>
-                        <p class="text-[13px] font-semibold text-slate-500">Aucun niveau de bonus</p>
-                        <p class="text-[12px] text-slate-400">Cliquez sur « Ajouter un niveau » pour commencer.</p>
+                        <p class="text-[13px] font-semibold text-slate-500">{{ __('config.levels_empty_title') }}</p>
+                        <p class="text-[12px] text-slate-400">{{ __('config.levels_empty_sub') }}</p>
                     </div>
                 @endforelse
             </div>
@@ -314,7 +317,8 @@
     <div id="level-modal" class="pcc-modal-backdrop" style="display:none;">
         <div class="pcc-modal">
             <div class="pcc-modal-header">
-                <span id="modal-title" class="text-[16px] font-black text-slate-900">Add Bonus Level</span>
+                <span id="modal-title"
+                    class="text-[16px] font-black text-slate-900">{{ __('config.levels_modal_add') }}</span>
                 <button type="button" onclick="closeModal()"
                     class="grid h-8 w-8 place-items-center rounded-full hover:bg-slate-100 text-slate-400 transition">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="h-4 w-4">
@@ -330,34 +334,34 @@
 
                     {{-- Bonus Name --}}
                     <div class="pcc-field">
-                        <label>Bonus Name</label>
+                        <label>{{ __('config.levels_field_name') }}</label>
                         <input type="text" id="f-name" name="name" required maxlength="100"
-                            placeholder="e.g. Gold">
+                            placeholder="{{ __('config.levels_field_name_ph') }}">
                     </div>
 
                     {{-- Points + Sort --}}
                     <div class="grid grid-cols-2 gap-4">
                         <div class="pcc-field">
-                            <label>Required Points</label>
+                            <label>{{ __('config.levels_field_pts') }}</label>
                             <input type="number" id="f-pts" name="required_points" min="0"
                                 step="1" required>
                         </div>
                         <div class="pcc-field">
-                            <label>Sort Order</label>
+                            <label>{{ __('config.levels_field_sort') }}</label>
                             <input type="number" id="f-sort" name="sort_order" min="0" value="0">
                         </div>
                     </div>
 
                     {{-- Reward Name --}}
                     <div class="pcc-field">
-                        <label>Reward Name</label>
+                        <label>{{ __('config.levels_field_reward') }}</label>
                         <input type="text" id="f-reward" name="reward_name" required maxlength="255"
-                            placeholder="e.g. 10% Discount">
+                            placeholder="{{ __('config.levels_field_reward_ph') }}">
                     </div>
 
                     {{-- Image dropzone --}}
                     <div class="pcc-field">
-                        <label>Image</label>
+                        <label>{{ __('config.levels_field_image') }}</label>
                         <div class="img-drop" id="f-img-drop" onclick="document.getElementById('f-image').click()">
                             <input type="file" id="f-image" name="image"
                                 accept="image/jpeg,image/png,image/webp,image/gif">
@@ -368,8 +372,9 @@
                                     <circle cx="8.5" cy="8.5" r="1.5" />
                                     <polyline points="21 15 16 10 5 21" />
                                 </svg>
-                                <p class="text-[12px] font-semibold text-slate-400">Click to upload</p>
-                                <p class="text-[11px] text-slate-300 mt-0.5">JPG, PNG, WEBP — max 2 MB</p>
+                                <p class="text-[12px] font-semibold text-slate-400">
+                                    {{ __('config.levels_img_click') }}</p>
+                                <p class="text-[11px] text-slate-300 mt-0.5">{{ __('config.levels_img_types') }}</p>
                             </div>
                             <div id="f-img-preview" class="img-preview" style="display:none;">
                                 <img id="f-img-thumb" src="" alt="Preview">
@@ -381,22 +386,24 @@
 
                     {{-- Description --}}
                     <div class="pcc-field">
-                        <label>Description</label>
-                        <textarea id="f-desc" name="reward_description" placeholder="Optional details…"></textarea>
+                        <label>{{ __('config.levels_field_desc') }}</label>
+                        <textarea id="f-desc" name="reward_description" placeholder="{{ __('config.levels_field_desc_ph') }}"></textarea>
                     </div>
 
                     {{-- Active checkbox --}}
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="f-active" name="is_active" value="1" checked
                             class="h-4 w-4 rounded accent-[#FFC60B]">
-                        <label for="f-active" class="text-[13px] font-semibold text-slate-700">Active</label>
+                        <label for="f-active"
+                            class="text-[13px] font-semibold text-slate-700">{{ __('config.levels_field_active') }}</label>
                     </div>
                 </div>
 
                 <div class="pcc-modal-footer">
-                    <button type="button" onclick="closeModal()" class="pcc-btn-secondary">Cancel</button>
+                    <button type="button" onclick="closeModal()"
+                        class="pcc-btn-secondary">{{ __('config.btn_cancel') }}</button>
                     <button type="submit" class="pcc-btn-primary">
-                        <span id="modal-btn-txt">Save Level</span>
+                        <span id="modal-btn-txt">{{ __('config.levels_btn_save') }}</span>
                     </button>
                 </div>
             </form>
@@ -404,14 +411,32 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @php
+        $levelsJs = [
+            'modal_add' => __('config.levels_modal_add'),
+            'modal_edit' => __('config.levels_modal_edit'),
+            'btn_save' => __('config.levels_btn_save'),
+            'swal_success' => __('config.levels_swal_success'),
+            'swal_saved' => __('config.levels_swal_saved'),
+            'swal_error' => __('config.levels_swal_error'),
+            'delete_title' => __('config.levels_delete_title'),
+            'delete_text' => __('config.levels_delete_text'),
+            'delete_btn' => __('config.levels_delete_btn'),
+            'cancel_btn' => __('config.levels_cancel_btn'),
+            'deleted_title' => __('config.levels_deleted_title'),
+            'deleted_text' => __('config.levels_deleted_text'),
+            'delete_error' => __('config.levels_delete_error'),
+        ];
+    @endphp
     <script>
         const csrf = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
         const modal = document.getElementById('level-modal');
+        const t = @json($levelsJs);
 
         function openModal(level = null) {
             document.getElementById('level-id').value = level ? level.id : '';
-            document.getElementById('modal-title').textContent = level ? 'Edit Bonus Level' : 'Add Bonus Level';
-            document.getElementById('modal-btn-txt').textContent = level ? 'Save Level' : 'Save Level';
+            document.getElementById('modal-title').textContent = level ? t.modal_edit : t.modal_add;
+            document.getElementById('modal-btn-txt').textContent = t.btn_save;
             document.getElementById('f-name').value = level?.name ?? '';
             document.getElementById('f-pts').value = level?.required_points ?? '';
             document.getElementById('f-reward').value = level?.reward_name ?? '';
@@ -492,8 +517,8 @@
                 closeModal();
                 Swal.fire({
                     icon: 'success',
-                    title: 'Succès',
-                    text: data.message ?? 'Enregistré.',
+                    title: t.swal_success,
+                    text: data.message ?? t.swal_saved,
                     confirmButtonColor: '#FFC60B',
                     timer: 1800,
                     showConfirmButton: false
@@ -502,10 +527,10 @@
             } else {
                 const errors = data.errors ?
                     Object.values(data.errors).flat().join('\n') :
-                    (data.message ?? 'Erreur.');
+                    (data.message ?? t.swal_error);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Erreur',
+                    title: t.swal_error,
                     text: errors,
                     confirmButtonColor: '#FFC60B'
                 });
@@ -514,12 +539,12 @@
 
         function deleteLevel(id, name) {
             Swal.fire({
-                title: 'Supprimer ce niveau\u00a0?',
-                html: `<span style="font-size:13.5px;color:#475569">Cette action est irréversible.</span><br><strong style="font-size:13px;color:#0f172a">${name}</strong>`,
+                title: t.delete_title,
+                html: `<span style="font-size:13.5px;color:#475569">${t.delete_text}</span><br><strong style="font-size:13px;color:#0f172a">${name}</strong>`,
                 icon: 'warning',
                 showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonText: 'Supprimer',
+                cancelButtonText: t.cancel_btn,
+                confirmButtonText: t.delete_btn,
                 confirmButtonColor: '#ef4444',
                 cancelButtonColor: '#e2e8f0',
                 reverseButtons: true,
@@ -540,8 +565,8 @@
                 if (res.ok) {
                     Swal.fire({
                         icon: 'success',
-                        title: 'Supprimé',
-                        text: data.message ?? 'Niveau supprimé.',
+                        title: t.deleted_title,
+                        text: data.message ?? t.deleted_text,
                         confirmButtonColor: '#f59e0b',
                         timer: 1600,
                         showConfirmButton: false
@@ -550,8 +575,8 @@
                 } else {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Erreur',
-                        text: data.message ?? 'Impossible de supprimer.',
+                        title: t.swal_error,
+                        text: data.message ?? t.delete_error,
                         confirmButtonColor: '#f59e0b'
                     });
                 }

@@ -411,14 +411,14 @@
         <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div class="space-y-1">
                 <nav class="flex items-center gap-1.5 text-[11.5px] font-semibold text-slate-400">
-                    <span>Fidélité</span>
+                    <span>{{ __('demandes.breadcrumb_loyalty') }}</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
-                    <span class="text-slate-700">Demandes Bonus</span>
+                    <span class="text-slate-700">{{ __('demandes.page_title') }}</span>
                 </nav>
-                <h1 class=" text-[26px] font-black tracking-tight text-slate-900">Demandes Bonus</h1>
-                <p class="text-[13px] text-slate-500">Suivez et traitez les demandes de bonus soumises par les clients.
+                <h1 class=" text-[26px] font-black tracking-tight text-slate-900">{{ __('demandes.page_title') }}</h1>
+                <p class="text-[13px] text-slate-500">{{ __('demandes.page_subtitle') }}
                 </p>
             </div>
         </div>
@@ -438,8 +438,8 @@
                     </svg>
                 </div>
                 <div class="stat-val">{{ number_format($counts['total']) }}</div>
-                <div class="stat-label">Total Demandes</div>
-                <div class="stat-sub">Toutes demandes confondues</div>
+                <div class="stat-label">{{ __('demandes.stat_total') }}</div>
+                <div class="stat-sub">{{ __('demandes.stat_total_sub') }}</div>
             </div>
 
             {{-- Pending --}}
@@ -453,8 +453,10 @@
                     </svg>
                 </div>
                 <div class="stat-val">{{ number_format($counts['pending']) }}</div>
-                <div class="stat-label">En Attente</div>
-                <div class="stat-sub">{{ round(($counts['pending'] / $segTotal) * 100) }}% du total</div>
+                <div class="stat-label">{{ __('demandes.stat_pending') }}</div>
+                <div class="stat-sub">
+                    {{ str_replace(':pct', round(($counts['pending'] / $segTotal) * 100), __('demandes.stat_pending_sub')) }}
+                </div>
             </div>
 
             {{-- Approved + Delivered --}}
@@ -468,8 +470,9 @@
                     </svg>
                 </div>
                 <div class="stat-val">{{ number_format($counts['approved'] + $counts['delivered']) }}</div>
-                <div class="stat-label">Approuvées / Livrées</div>
-                <div class="stat-sub">Taux : {{ $stats['approvalRate'] }}%</div>
+                <div class="stat-label">{{ __('demandes.stat_approved_delivered') }}</div>
+                <div class="stat-sub">
+                    {{ str_replace(':rate', $stats['approvalRate'], __('demandes.stat_approved_sub')) }}</div>
             </div>
 
             {{-- Rejected --}}
@@ -483,8 +486,10 @@
                     </svg>
                 </div>
                 <div class="stat-val">{{ number_format($stats['pendingPoints']) }}</div>
-                <div class="stat-label">Points en Attente</div>
-                <div class="stat-sub">{{ number_format($counts['rejected']) }} demande(s) rejetée(s)</div>
+                <div class="stat-label">{{ __('demandes.stat_points_pending') }}</div>
+                <div class="stat-sub">
+                    {{ str_replace(':count', number_format($counts['rejected']), __('demandes.stat_rejected_sub')) }}
+                </div>
             </div>
 
         </div>
@@ -497,18 +502,19 @@
                     <circle cx="11" cy="11" r="7" />
                     <path d="m20 20-3.5-3.5" />
                 </svg>
-                <input type="search" id="pcc-quick-filter" placeholder="Rechercher un client, bonus…"
+                <input type="search" id="pcc-quick-filter" placeholder="{{ __('demandes.search_placeholder') }}"
                     class="h-full w-full rounded-full border border-slate-200 bg-white pl-11 pr-4 text-[13px] text-slate-700 shadow-sm focus:border-slate-300 focus:outline-none focus:ring-4 focus:ring-pcc-yellow/30">
             </label>
 
             <div class="w-full md:w-56">
-                <x-select2 name="status_filter" id="status_filter" placeholder="Tous les statuts" :options="[
-                    'pending' => 'En attente',
-                    'approved' => 'Approuvée',
-                    'rejected' => 'Rejetée',
-                    'delivered' => 'Livrée',
-                ]"
-                    :allowClear="true" wrapperClass="!mb-0" />
+                <x-select2 name="status_filter" id="status_filter"
+                    placeholder="{{ __('demandes.filter_placeholder') }}" :options="[
+                        'pending' => __('demandes.status_pending'),
+                        'approved' => __('demandes.status_approved'),
+                        'rejected' => __('demandes.status_rejected'),
+                        'delivered' => __('demandes.status_delivered'),
+                    ]" :allowClear="true"
+                    wrapperClass="!mb-0" />
             </div>
 
             <button type="button" id="pcc-clear-filters"
@@ -516,7 +522,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-4 w-4">
                     <path d="M3 6h18M8 12h13M11 18h10" />
                 </svg>
-                Réinitialiser
+                {{ __('demandes.btn_reset') }}
             </button>
 
             {{-- Live counter --}}
@@ -532,13 +538,13 @@
                 <rect x="3" y="3" width="18" height="18" rx="4" />
                 <path d="M9 9h6M9 13h4" />
             </svg>
-            <p class="text-[13px] font-semibold text-slate-400">Aucune demande trouvée</p>
+            <p class="text-[13px] font-semibold text-slate-400">{{ __('demandes.no_results') }}</p>
         </div>
 
         {{-- Loading spinner --}}
         <div class="pcc-spinner" id="pcc-spinner">
             <div class="pcc-spinner-ring"></div>
-            <span class="text-[12px] font-semibold text-slate-400">Chargement…</span>
+            <span class="text-[12px] font-semibold text-slate-400">{{ __('demandes.loading') }}</span>
         </div>
 
         {{-- Infinite scroll sentinel --}}
@@ -569,22 +575,22 @@
 
                 const STATUS_CFG = {
                     pending: {
-                        label: 'En attente',
+                        label: '{{ __('demandes.status_pending') }}',
                         cls: 'pending',
                         accent: 'linear-gradient(90deg,#f59e0b,#fbbf24)'
                     },
                     approved: {
-                        label: 'Approuvée',
+                        label: '{{ __('demandes.status_approved') }}',
                         cls: 'approved',
                         accent: 'linear-gradient(90deg,#10b981,#34d399)'
                     },
                     delivered: {
-                        label: 'Livrée',
+                        label: '{{ __('demandes.status_delivered') }}',
                         cls: 'delivered',
                         accent: 'linear-gradient(90deg,#3b82f6,#60a5fa)'
                     },
                     rejected: {
-                        label: 'Rejetée',
+                        label: '{{ __('demandes.status_rejected') }}',
                         cls: 'rejected',
                         accent: 'linear-gradient(90deg,#ef4444,#f87171)'
                     },
@@ -639,8 +645,9 @@
 
                 function updateCounter() {
                     counter.textContent = state.total > 0 ?
-                        state.shown + ' / ' + state.total + ' demande' + (state.total > 1 ? 's' : '') :
-                        '0 demande';
+                        state.shown + ' / ' + state.total + ' ' + (state.total > 1 ?
+                            '{{ __('demandes.js_counter_plural') }}' : '{{ __('demandes.js_counter_singular') }}') :
+                        '0 {{ __('demandes.js_counter_singular') }}';
                 }
 
                 /* ─── Card renderer ─── */
@@ -672,11 +679,11 @@
       <div class="req-bonus-thumb">${thumbHtml}</div>
       <div style="flex:1;min-width:0;">
         <div class="req-bonus-name">${esc(item.bonus_name)}</div>
-        <div class="req-bonus-sub">Bonus fidélité</div>
+        <div class="req-bonus-sub">{{ __('demandes.js_loyalty_bonus') }}</div>
       </div>
       <div class="req-pts-wrap">
         <div class="req-pts">${pts}</div>
-        <div class="req-pts-label">pts requis</div>
+        <div class="req-pts-label">{{ __('demandes.js_pts_required') }}</div>
       </div>
     </div>
     <div class="req-card-footer">
@@ -688,7 +695,7 @@
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
         <span class="req-date">${date}</span>
         <a href="${esc(item.show_url)}" class="req-view-btn">
-          Voir
+          {{ __('demandes.js_view') }}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="11" height="11"><path d="m9 18 6-6-6-6"/></svg>
         </a>
       </div>

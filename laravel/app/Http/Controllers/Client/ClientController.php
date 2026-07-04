@@ -10,12 +10,30 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use Illuminate\Support\Facades\File;
+
+
 class ClientController extends Controller
 {
     // ── List clients ──────────────────────────────────────────────────────────
 
     public function index(Request $request): View|JsonResponse
     {
+
+
+    // $avatars = File::files(storage_path('app/public/default-clients'));
+
+    // Client::doesntHave('media')->chunk(100, function ($clients) use ($avatars) {
+    //     foreach ($clients as $client) {
+    //         $avatar = $avatars[array_rand($avatars)];
+
+    //         $client
+    //             ->addMedia($avatar->getPathname())
+    //             ->preservingOriginal()
+    //             ->toMediaCollection('picture');
+    //     }
+    // });
+
         $perPage = 16;
 
         $query = Client::query()

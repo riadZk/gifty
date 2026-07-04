@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 class Message extends Model
 {
     const STATUS_QUEUED  = 'queued';
+    const STATUS_SENDING = 'sending';
     const STATUS_SENT    = 'sent';
     const STATUS_PARTIAL = 'partial';
     const STATUS_FAILED  = 'failed';

@@ -36,9 +36,14 @@ return [
     ],
 
     'whatsapp' => [
+        'api_url'    => env('WHATSAPP_API_URL', 'https://message.parrotscan.com/send'),
+        'api_key'    => env('WHATSAPP_API_KEY', ''),
+        'sender'     => env('WHATSAPP_SENDER', ''),
+        'batch_size' => env('WHATSAPP_BATCH_SIZE', 15),
+        // legacy aliases
         'url'   => env('WHATSAPP_API_URL'),
-        'token' => env('WHATSAPP_API_TOKEN'),
-        'from'  => env('WHATSAPP_FROM'),
+        'token' => env('WHATSAPP_API_KEY'),
+        'from'  => env('WHATSAPP_SENDER'),
     ],
 
 ];

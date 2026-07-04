@@ -6,9 +6,21 @@
 
         /* ── Status config ── */
         $statusCfg = [
-            'active' => ['label' => 'Actif', 'cls' => 'bg-emerald-100 text-emerald-700', 'dot' => 'bg-emerald-500'],
-            'inactive' => ['label' => 'Inactif', 'cls' => 'bg-amber-100 text-amber-700', 'dot' => 'bg-amber-400'],
-            'blocked' => ['label' => 'Bloqué', 'cls' => 'bg-red-100 text-red-600', 'dot' => 'bg-red-500'],
+            'active' => [
+                'label' => __('clients.status_active'),
+                'cls' => 'bg-emerald-100 text-emerald-700',
+                'dot' => 'bg-emerald-500',
+            ],
+            'inactive' => [
+                'label' => __('clients.status_inactive'),
+                'cls' => 'bg-amber-100 text-amber-700',
+                'dot' => 'bg-amber-400',
+            ],
+            'blocked' => [
+                'label' => __('clients.status_blocked'),
+                'cls' => 'bg-red-100 text-red-600',
+                'dot' => 'bg-red-500',
+            ],
         ];
         $sc = $statusCfg[$client->status] ?? $statusCfg['inactive'];
 
@@ -31,14 +43,26 @@
         /* ── Activity logs (bonus requests) ── */
         $logs = $logs ?? collect();
         $logStatusCfg = [
-            'pending' => ['label' => 'En attente', 'cls' => 'bg-amber-100 text-amber-700', 'dot' => 'bg-amber-400'],
+            'pending' => [
+                'label' => __('clients.log_pending'),
+                'cls' => 'bg-amber-100 text-amber-700',
+                'dot' => 'bg-amber-400',
+            ],
             'approved' => [
-                'label' => 'Approuvée',
+                'label' => __('clients.log_approved'),
                 'cls' => 'bg-emerald-100 text-emerald-700',
                 'dot' => 'bg-emerald-500',
             ],
-            'rejected' => ['label' => 'Rejetée', 'cls' => 'bg-red-100 text-red-600', 'dot' => 'bg-red-500'],
-            'delivered' => ['label' => 'Livrée', 'cls' => 'bg-blue-100 text-blue-700', 'dot' => 'bg-blue-500'],
+            'rejected' => [
+                'label' => __('clients.log_rejected'),
+                'cls' => 'bg-red-100 text-red-600',
+                'dot' => 'bg-red-500',
+            ],
+            'delivered' => [
+                'label' => __('clients.log_delivered'),
+                'cls' => 'bg-blue-100 text-blue-700',
+                'dot' => 'bg-blue-500',
+            ],
         ];
 
         /* ── Activity stats (defaults if not provided) ── */
@@ -102,7 +126,7 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                     <path d="m9 18 6-6-6-6" />
                 </svg>
-                <span class="text-slate-600">Détail client</span>
+                <span class="text-slate-600">{{ __('clients.show_title') }}</span>
             </nav>
 
             <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
@@ -112,9 +136,9 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
                             <path d="m15 18-6-6 6-6" />
                         </svg>
-                        Retour
+                        {{ __('clients.btn_back') }}
                     </a>
-                    <h1 class="text-[22px] font-black tracking-tight text-slate-900">Détail client</h1>
+                    <h1 class="text-[22px] font-black tracking-tight text-slate-900">{{ __('clients.show_title') }}</h1>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
@@ -145,9 +169,16 @@
 
                 {{-- Zone 1 : Identity --}}
                 <div class="flex items-start gap-4 p-6 lg:w-[320px] shrink-0">
-                    <span
-                        class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-[18px] font-black text-white shadow-md"
-                        style="background:{{ $avatarGrad }};">{{ $initials }}</span>
+                    @php $pictureUrl = $client->getFirstMediaUrl('picture'); @endphp
+                    @if ($pictureUrl)
+                        <img src="{{ $pictureUrl }}" alt="{{ $client->company_name }}"
+                            class="h-14 w-14 shrink-0 rounded-2xl object-cover shadow-md"
+                            style="background:{{ $avatarGrad }};">
+                    @else
+                        <span
+                            class="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-[18px] font-black text-white shadow-md"
+                            style="background:{{ $avatarGrad }};">{{ $initials }}</span>
+                    @endif
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-2">
                             <span
@@ -187,13 +218,15 @@
                 <div class="flex-1 p-6">
                     <dl class="grid grid-cols-2 gap-x-8 gap-y-4 text-[13px]">
                         <div>
-                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Code PCC
+                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                                {{ __('clients.label_pcc_code') }}
                             </dt>
                             <dd class="mt-1 flex items-center gap-2 font-mono font-semibold text-slate-800">
                                 {{ $client->pcc_customer_code ?: '—' }}
                                 @if ($client->pcc_customer_code)
                                     <button onclick="navigator.clipboard.writeText('{{ $client->pcc_customer_code }}')"
-                                        title="Copier" class="text-slate-400 transition hover:text-slate-600">
+                                        title="{{ __('clients.btn_copy') }}"
+                                        class="text-slate-400 transition hover:text-slate-600">
                                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                                             class="h-3.5 w-3.5">
                                             <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -204,20 +237,21 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Membre
-                                depuis</dt>
+                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                                {{ __('clients.label_member_since') }}</dt>
                             <dd class="mt-1 font-semibold text-slate-800">
                                 {{ $client->created_at?->translatedFormat('d M Y') ?? '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Compte
-                                validé le</dt>
+                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                                {{ __('clients.label_validated_on') }}</dt>
                             <dd class="mt-1 font-semibold text-slate-800">
-                                {{ $client->accepted_at?->translatedFormat('d M Y') ?? 'En attente' }}</dd>
+                                {{ $client->accepted_at?->translatedFormat('d M Y') ?? __('clients.pending_validation') }}
+                            </dd>
                         </div>
                         <div>
-                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Demandes
-                                bonus
+                            <dt class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                                {{ __('clients.label_bonus_requests') }}
                             </dt>
                             <dd class="mt-1 font-semibold text-slate-800">{{ $logs->count() }}</dd>
                         </div>
@@ -226,13 +260,14 @@
 
                 {{-- Zone 3 : Points summary --}}
                 <div class="flex flex-col justify-center gap-1 bg-slate-50/60 p-6 lg:w-[220px] shrink-0">
-                    <p class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">Solde de points</p>
+                    <p class="text-[10.5px] font-semibold uppercase tracking-wider text-slate-400">
+                        {{ __('clients.label_points_balance') }}</p>
                     <p class="text-[28px] font-black leading-none text-slate-900">
                         {{ number_format($pointsBalance, 0, ',', ' ') }}
                         <span class="text-[14px] font-semibold text-slate-400">pts</span>
                     </p>
                     <p class="mt-2 text-[12px] font-medium text-slate-500">
-                        {{ number_format($totalSales, 0, ',', ' ') }} MAD de ventes
+                        {{ __('clients.sales_suffix', ['amount' => number_format($totalSales, 0, ',', ' ')]) }}
                     </p>
                 </div>
             </div>
@@ -249,12 +284,12 @@
                     </svg>
                 </span>
                 <div>
-                    <p class="text-[11px] font-semibold text-slate-400">Solde de points</p>
+                    <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.label_points_balance') }}</p>
                     <p class="text-[20px] font-black leading-tight text-slate-900">
                         {{ number_format($pointsBalance, 0, ',', ' ') }} <span
                             class="text-[12px] text-slate-400">pts</span>
                     </p>
-                    <p class="text-[10.5px] font-medium text-slate-400">Total accumulé</p>
+                    <p class="text-[10.5px] font-medium text-slate-400">{{ __('clients.tile_points_sub') }}</p>
                 </div>
             </div>
 
@@ -268,12 +303,12 @@
                     </svg>
                 </span>
                 <div>
-                    <p class="text-[11px] font-semibold text-slate-400">Total des ventes</p>
+                    <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.tile_sales') }}</p>
                     <p class="text-[20px] font-black leading-tight text-slate-900">
                         {{ number_format($totalSales, 0, ',', ' ') }} <span
                             class="text-[12px] text-slate-400">MAD</span>
                     </p>
-                    <p class="text-[10.5px] font-medium text-slate-400">Cumul des achats</p>
+                    <p class="text-[10.5px] font-medium text-slate-400">{{ __('clients.tile_sales_sub') }}</p>
                 </div>
             </div>
 
@@ -285,10 +320,10 @@
                     </svg>
                 </span>
                 <div>
-                    <p class="text-[11px] font-semibold text-slate-400">Statut</p>
+                    <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.tile_status') }}</p>
                     <p data-status-label class="text-[20px] font-black leading-tight text-slate-900">
                         {{ $sc['label'] }}</p>
-                    <p class="text-[10.5px] font-medium text-slate-400">État du compte</p>
+                    <p class="text-[10.5px] font-medium text-slate-400">{{ __('clients.tile_status_sub') }}</p>
                 </div>
             </div>
 
@@ -303,7 +338,7 @@
                     </svg>
                 </span>
                 <div>
-                    <p class="text-[11px] font-semibold text-slate-400">Membre depuis</p>
+                    <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.tile_member') }}</p>
                     <p class="text-[16px] font-black leading-tight text-slate-900">
                         {{ $client->created_at?->translatedFormat('d M Y') ?? '—' }}
                     </p>
@@ -318,15 +353,15 @@
             {{-- Points overview --}}
             <div class="lg:col-span-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="mb-1 flex items-center justify-between">
-                    <h3 class="text-[14px] font-bold text-slate-800">Aperçu des points</h3>
-                    <span class="text-[11.5px] font-medium text-slate-400">Gagnés · Utilisés · Solde</span>
+                    <h3 class="text-[14px] font-bold text-slate-800">{{ __('clients.chart_points_title') }}</h3>
+                    <span class="text-[11.5px] font-medium text-slate-400">{{ __('clients.chart_points_sub') }}</span>
                 </div>
                 <div id="chart-points" class="min-h-[220px]"></div>
             </div>
 
             {{-- Status breakdown --}}
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <h3 class="mb-1 text-[14px] font-bold text-slate-800">Répartition des demandes</h3>
+                <h3 class="mb-1 text-[14px] font-bold text-slate-800">{{ __('clients.chart_status_title') }}</h3>
                 @if ($requestsCount > 0)
                     <div id="chart-status" class="min-h-[220px]"></div>
                 @else
@@ -338,7 +373,7 @@
                                 <path d="M22 12A10 10 0 0 0 12 2v10z" />
                             </svg>
                         </span>
-                        <p class="text-[12.5px] font-semibold text-slate-500">Aucune donnée</p>
+                        <p class="text-[12.5px] font-semibold text-slate-500">{{ __('clients.chart_no_data') }}</p>
                     </div>
                 @endif
             </div>
@@ -349,9 +384,9 @@
             {{-- Tab bar --}}
             <div class="overflow-x-auto border-b border-slate-200 px-5 py-4">
                 <div class="seg-wrap">
-                    <button class="tab-btn active" data-tab="infos">Informations</button>
-                    <button class="tab-btn" data-tab="logs">Journal d&rsquo;activité</button>
-                    <button class="tab-btn" data-tab="loyalty">Fidélité &amp; ventes</button>
+                    <button class="tab-btn active" data-tab="infos">{{ __('clients.tab_info') }}</button>
+                    <button class="tab-btn" data-tab="logs">{{ __('clients.tab_activity') }}</button>
+                    <button class="tab-btn" data-tab="loyalty">{{ __('clients.tab_loyalty') }}</button>
                 </div>
             </div>
 
@@ -360,12 +395,12 @@
                 <dl class="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-2">
                     @php
                         $rows = [
-                            ['Raison sociale', $client->company_name],
-                            ['Personne de contact', $client->contact_name ?: '—'],
-                            ['Téléphone', $client->phone ?: '—'],
-                            ['Email', $client->email ?: '—'],
-                            ['Code PCC', $client->pcc_customer_code ?: '—'],
-                            ['Membre depuis', $client->created_at?->translatedFormat('d F Y') ?? '—'],
+                            [__('clients.info_company'), $client->company_name],
+                            [__('clients.info_contact'), $client->contact_name ?: '—'],
+                            [__('clients.info_phone'), $client->phone ?: '—'],
+                            [__('clients.info_email'), $client->email ?: '—'],
+                            [__('clients.info_pcc_code'), $client->pcc_customer_code ?: '—'],
+                            [__('clients.info_member_since'), $client->created_at?->translatedFormat('d F Y') ?? '—'],
                         ];
                     @endphp
                     @foreach ($rows as [$lbl, $val])
@@ -376,7 +411,7 @@
                         </div>
                     @endforeach
                     <div class="flex items-center justify-between gap-4 border-b border-slate-50 pb-3">
-                        <dt class="text-[12.5px] font-medium text-slate-400">Statut</dt>
+                        <dt class="text-[12.5px] font-medium text-slate-400">{{ __('clients.info_status') }}</dt>
                         <dd>
                             <span data-status-badge
                                 class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold {{ $sc['cls'] }}">
@@ -412,9 +447,10 @@
                                 </span>
                             </div>
                             <p class="mt-0.5 text-[12.5px] text-slate-500">
-                                {{ $log->bonusLevel->name ?? 'Niveau supprimé' }}
+                                {{ $log->bonusLevel->name ?? __('clients.log_deleted_level') }}
                                 <span class="mx-1 text-slate-300">•</span>
-                                {{ number_format((int) $log->points_required, 0, ',', ' ') }} pts requis
+                                {{ number_format((int) $log->points_required, 0, ',', ' ') }}
+                                {{ __('clients.log_pts_required') }}
                             </p>
                         </div>
                         <div class="shrink-0 text-right text-[11.5px] font-medium text-slate-400">
@@ -430,8 +466,8 @@
                                 <polyline points="12 6 12 12 16 14" />
                             </svg>
                         </span>
-                        <p class="text-[13px] font-semibold text-slate-500">Aucune activité</p>
-                        <p class="text-[12px] text-slate-400">Ce client n’a pas encore de demande de bonus.</p>
+                        <p class="text-[13px] font-semibold text-slate-500">{{ __('clients.log_no_activity') }}</p>
+                        <p class="text-[12px] text-slate-400">{{ __('clients.log_no_activity_sub') }}</p>
                     </div>
                 @endforelse
             </div>
@@ -440,46 +476,46 @@
             <div class="tab-pane p-6" id="tab-loyalty">
                 <div class="grid grid-cols-2 gap-4 lg:grid-cols-3">
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Solde de points</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_balance') }}</p>
                         <p class="mt-1 text-[22px] font-black text-slate-900">
                             {{ number_format($pointsBalance, 0, ',', ' ') }} <span
                                 class="text-[12px] text-slate-400">pts</span></p>
                     </div>
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Total des ventes</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_sales') }}</p>
                         <p class="mt-1 text-[22px] font-black text-slate-900">
                             {{ number_format($totalSales, 0, ',', ' ') }} <span
                                 class="text-[12px] text-slate-400">MAD</span></p>
                     </div>
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Points utilisés</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_used') }}</p>
                         <p class="mt-1 text-[22px] font-black text-slate-900">
                             {{ number_format((int) $pointsSpent, 0, ',', ' ') }} <span
                                 class="text-[12px] text-slate-400">pts</span></p>
                     </div>
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Demandes totales</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_total_req') }}</p>
                         <p class="mt-1 text-[22px] font-black text-slate-900">{{ $requestsCount }}</p>
                     </div>
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Demandes approuvées</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_approved') }}</p>
                         <p class="mt-1 text-[22px] font-black text-emerald-600">{{ $approvedCount }}</p>
                     </div>
                     <div class="rounded-xl border border-slate-200 p-4">
-                        <p class="text-[11px] font-semibold text-slate-400">Taux de fidélité</p>
+                        <p class="text-[11px] font-semibold text-slate-400">{{ __('clients.loyalty_rate') }}</p>
                         <p class="mt-1 text-[22px] font-black text-slate-900">2 <span
-                                class="text-[12px] text-slate-400">% du HT</span></p>
+                                class="text-[12px] text-slate-400">{{ __('clients.loyalty_rate_sub') }}</span></p>
                     </div>
                 </div>
                 <p class="mt-4 text-[12px] font-medium text-slate-400">
-                    Les points sont calculés à raison de 2&nbsp;% du montant HT de chaque vente.
+                    {{ __('clients.loyalty_note') }}
                 </p>
             </div>
         </div>
 
         {{-- Footer --}}
         <p class="px-1 text-[11.5px] font-medium text-slate-400">
-            Créé le {{ $client->created_at?->translatedFormat('d F Y') ?? '—' }}
+            {{ __('clients.footer_created') }} {{ $client->created_at?->translatedFormat('d F Y') ?? '—' }}
         </p>
     </div>
 
@@ -521,7 +557,9 @@
                     },
                     colors: ['#10b981', '#f59e0b', '#3b82f6'],
                     xaxis: {
-                        categories: ['Points gagnés', 'Points utilisés', 'Solde actuel'],
+                        categories: ['{{ __('clients.chart_earned') }}', '{{ __('clients.chart_used') }}',
+                            '{{ __('clients.chart_balance') }}'
+                        ],
                         labels: {
                             style: {
                                 colors: '#94a3b8',
@@ -580,7 +618,9 @@
                         fontFamily: 'inherit'
                     },
                     series: counts,
-                    labels: ['En attente', 'Approuvées', 'Rejetées', 'Livrées'],
+                    labels: ['{{ __('clients.log_pending') }}', '{{ __('clients.log_approved') }}',
+                        '{{ __('clients.log_rejected') }}', '{{ __('clients.log_delivered') }}'
+                    ],
                     colors: ['#fbbf24', '#10b981', '#ef4444', '#3b82f6'],
                     legend: {
                         position: 'bottom',
@@ -603,7 +643,7 @@
                                     show: true,
                                     total: {
                                         show: true,
-                                        label: 'Total',
+                                        label: '{{ __('clients.chart_total') }}',
                                         color: '#64748b',
                                         fontSize: '12px',
                                         formatter: () => counts.reduce((a, b) => a + b, 0),
@@ -652,17 +692,17 @@
         /* ── Status config ── */
         const STATUS_CFG = {
             active: {
-                label: 'Actif',
+                label: '{{ __('clients.status_active') }}',
                 badgeCls: 'bg-emerald-100 text-emerald-700',
                 dotCls: 'bg-emerald-500'
             },
             inactive: {
-                label: 'Inactif',
+                label: '{{ __('clients.status_inactive') }}',
                 badgeCls: 'bg-amber-100 text-amber-700',
                 dotCls: 'bg-amber-400'
             },
             blocked: {
-                label: 'Bloqué',
+                label: '{{ __('clients.status_blocked') }}',
                 badgeCls: 'bg-red-100 text-red-600',
                 dotCls: 'bg-red-500'
             },
@@ -685,14 +725,14 @@
             let html = '';
             if (status === 'inactive') {
                 html +=
-                    `<button type="button" class="${base} bg-emerald-500 text-white hover:bg-emerald-600" data-action="activate" data-url="${urls.activate}">${iOk} Activer</button>`;
+                    `<button type="button" class="${base} bg-emerald-500 text-white hover:bg-emerald-600" data-action="activate" data-url="${urls.activate}">${iOk} {{ __('clients.action_activate') }}</button>`;
             } else if (status === 'blocked') {
                 html +=
-                    `<button type="button" class="${base} bg-emerald-500 text-white hover:bg-emerald-600" data-action="unblock" data-url="${urls.unblock}">${iOk} Débloquer</button>`;
+                    `<button type="button" class="${base} bg-emerald-500 text-white hover:bg-emerald-600" data-action="unblock" data-url="${urls.unblock}">${iOk} {{ __('clients.action_unblock') }}</button>`;
             }
             if (status !== 'blocked') {
                 html +=
-                    `<button type="button" class="${base} border border-red-200 bg-white text-red-600 hover:bg-red-50" data-action="block" data-url="${urls.block}">${iBan} Bloquer le client</button>`;
+                    `<button type="button" class="${base} border border-red-200 bg-white text-red-600 hover:bg-red-50" data-action="block" data-url="${urls.block}">${iBan} {{ __('clients.js_block_client_btn') }}</button>`;
             }
             el.innerHTML = html;
             el.querySelectorAll('button[data-action]').forEach(b => b.addEventListener('click', handleAction));
@@ -743,12 +783,12 @@
             const clientName = '{{ addslashes($client->company_name) }}';
 
             Swal.fire({
-                title: cfg.title ?? 'Confirmer ?',
+                title: cfg.title ?? '{{ __('clients.js_swal_confirm') }}',
                 html: `<span style="font-size:13.5px;color:#475569">${cfg.text ?? ''}</span><br><strong style="font-size:13px;color:#0f172a">${clientName}</strong>`,
                 icon: cfg.icon ?? 'question',
                 showCancelButton: true,
-                cancelButtonText: 'Annuler',
-                confirmButtonText: cfg.confirmButtonText ?? 'Confirmer',
+                cancelButtonText: '{{ __('clients.js_swal_cancel') }}',
+                confirmButtonText: cfg.confirmButtonText ?? '{{ __('clients.js_swal_confirm') }}',
                 confirmButtonColor: cfg.confirmButtonColor ?? '#3b82f6',
                 cancelButtonColor: '#e2e8f0',
                 reverseButtons: true,
@@ -778,13 +818,13 @@
                             document.getElementById('action-buttons').dataset.status = data.status;
                             renderButtons(data.status);
                             updateBadge(data.status);
-                            showToast(data.message ?? 'Statut mis à jour.', 'success');
+                            showToast(data.message ?? '{{ __('clients.js_status_ok') }}', 'success');
                             setTimeout(() => location.reload(), 1200);
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Erreur',
-                                text: data.message ?? 'Une erreur est survenue.',
+                                title: '{{ __('clients.js_error_title') }}',
+                                text: data.message ?? '{{ __('clients.js_error_occurred') }}',
                                 confirmButtonColor: '#3b82f6'
                             });
                             btn.disabled = false;
@@ -794,8 +834,8 @@
                     .catch(() => {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Erreur de connexion',
-                            text: 'Impossible de contacter le serveur.',
+                            title: '{{ __('clients.js_conn_error_title') }}',
+                            text: '{{ __('clients.js_conn_error_text') }}',
                             confirmButtonColor: '#3b82f6'
                         });
                         btn.disabled = false;

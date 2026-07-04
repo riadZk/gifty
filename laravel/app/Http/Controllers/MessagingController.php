@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendCampaignMessage;
 use App\Models\Client;
 use App\Models\Message;
 use App\Models\MessageRecipient;
-use App\Notifications\AdminMessage;
-use App\Services\WhatsAppService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 
 class MessagingController extends Controller
@@ -44,7 +43,7 @@ class MessagingController extends Controller
             ->latest()
             ->get();
 
-        $messageRows = $messages->map(fn (Message $m) => [
+        $messageRows = $messages->map(fn(Message $m) => [
             'id'               => $m->id,
             'message_key'      => $m->message_key,
             'title'            => $m->title,
@@ -88,7 +87,7 @@ class MessagingController extends Controller
         $trendLabels    = [];
         $trendDelivered = [];
         $trendFailed    = [];
-        $byDay = $messages->groupBy(fn (Message $m) => optional($m->created_at)->format('Y-m-d'));
+        $byDay = $messages->groupBy(fn(Message $m) => optional($m->created_at)->format('Y-m-d'));
         for ($i = 13; $i >= 0; $i--) {
             $day = now()->subDays($i);
             $key = $day->format('Y-m-d');
@@ -110,6 +109,78 @@ class MessagingController extends Controller
     }
 
     /**
+     * Return the full detail of a single message (campaign) with its recipients.
+     */
+    public function show(Message $message): JsonResponse
+    {
+        $message->load(['sender:id,name']);
+
+        $recipients = $message->recipients()
+            ->with('client:id,company_name,contact_name,email,phone')
+            ->get()
+            ->map(fn(MessageRecipient $r) => [
+                'id'      => $r->id,
+                'name'    => $r->client?->company_name ?? $r->client?->contact_name ?? '—',
+                'contact' => $r->channel === 'mail'
+                    ? ($r->client?->email ?? '—')
+                    : ($r->client?->phone ?? '—'),
+                'channel' => $r->channel,
+                'status'  => $r->status,
+                'error'   => $r->error,
+                'sent_at' => optional($r->sent_at)->toIso8601String(),
+            ])
+            ->values();
+
+        return response()->json([
+            'id'               => $message->id,
+            'message_key'      => $message->message_key,
+            'title'            => $message->title,
+            'body'             => $message->body,
+            'channels'         => $message->channels ?? [],
+            'sent_by'          => $message->sender?->name ?? __('messaging.sender_system'),
+            'status'           => $message->status,
+            'recipients_count' => (int) $message->recipients_count,
+            'delivered_count'  => (int) $message->delivered_count,
+            'failed_count'     => (int) $message->failed_count,
+            'created_at'       => optional($message->created_at)->toIso8601String(),
+            'recipients'       => $recipients,
+        ]);
+    }
+
+    /**
+     * Re-dispatch a message to its failed recipients only.
+     */
+    public function resend(Message $message): RedirectResponse
+    {
+        $failed = $message->recipients()
+            ->where('status', MessageRecipient::STATUS_FAILED)
+            ->count();
+
+        if ($failed === 0) {
+            return redirect()
+                ->route('messaging.history')
+                ->with('info', __('messaging.resend_none'));
+        }
+
+        // Reset failed recipients to pending so the job re-processes only them.
+        $message->recipients()
+            ->where('status', MessageRecipient::STATUS_FAILED)
+            ->update([
+                'status'  => MessageRecipient::STATUS_PENDING,
+                'error'   => null,
+                'sent_at' => null,
+            ]);
+
+        $message->update(['status' => Message::STATUS_QUEUED]);
+
+        SendCampaignMessage::dispatch($message);
+
+        return redirect()
+            ->route('messaging.history')
+            ->with('success', __('messaging.resend_started', ['count' => $failed]));
+    }
+
+    /**
      * Send a message to the selected clients over the chosen channels.
      */
     public function send(Request $request): RedirectResponse
@@ -124,15 +195,13 @@ class MessagingController extends Controller
         ]);
 
         $channels = $validated['channels'];
-        $title    = $validated['title'];
-        $body     = $validated['message'];
 
         $clients = Client::whereIn('id', $validated['client_ids'])->get();
 
         // ── Persist the message (campaign) ──
         $message = Message::create([
-            'title'            => $title,
-            'body'             => $body,
+            'title'            => $validated['title'],
+            'body'             => $validated['message'],
             'channels'         => $channels,
             'sent_by'          => $request->user()?->id,
             'recipients_count' => $clients->count() * count($channels),
@@ -140,10 +209,9 @@ class MessagingController extends Controller
         ]);
 
         // ── Create one recipient row per client × channel ──
-        $recipients = [];
         foreach ($clients as $client) {
             foreach ($channels as $channel) {
-                $recipients["{$client->id}:{$channel}"] = $message->recipients()->create([
+                $message->recipients()->create([
                     'client_id' => $client->id,
                     'channel'   => $channel,
                     'status'    => MessageRecipient::STATUS_PENDING,
@@ -151,69 +219,18 @@ class MessagingController extends Controller
             }
         }
 
-        // ── Push + Mail via Laravel notifications ──
-        $notifyChannels = array_values(array_intersect($channels, ['push', 'mail']));
-        if (! empty($notifyChannels)) {
-            try {
-                Notification::send($clients, new AdminMessage($title, $body, $notifyChannels));
-                foreach ($clients as $client) {
-                    foreach ($notifyChannels as $channel) {
-                        $recipients["{$client->id}:{$channel}"]?->markSent();
-                    }
-                }
-            } catch (\Throwable $e) {
-                foreach ($clients as $client) {
-                    foreach ($notifyChannels as $channel) {
-                        $recipients["{$client->id}:{$channel}"]?->markFailed($e->getMessage());
-                    }
-                }
-            }
-        }
-
-        // ── WhatsApp handled separately (batch) ──
-        if (in_array('whatsapp', $channels, true)) {
-            $text = $title !== '' ? "*{$title}*\n\n{$body}" : $body;
-
-            // Map normalized phone → recipient rows (skip clients without a phone).
-            $phoneToRows = [];
-            foreach ($clients as $client) {
-                $row = $recipients["{$client->id}:whatsapp"] ?? null;
-                if (! $row) {
-                    continue;
-                }
-                $normalized = preg_replace('/\D+/', '', (string) $client->phone);
-                if ($normalized === '' || $normalized === null) {
-                    $row->markFailed('Numéro de téléphone manquant');
-                    continue;
-                }
-                $phoneToRows[$normalized][] = $row;
-            }
-
-            if (! empty($phoneToRows)) {
-                $result = WhatsAppService::sendMessage(array_keys($phoneToRows), $text);
-                $detail = $result['detail'] ?? [];
-
-                foreach ($phoneToRows as $phone => $rows) {
-                    $sent = $detail[$phone] ?? ($result['ok'] ?? false);
-                    foreach ($rows as $row) {
-                        $sent ? $row->markSent() : $row->markFailed('Échec de l’envoi WhatsApp');
-                    }
-                }
-            }
-        }
-
-        // ── Update aggregate counts + overall status ──
-        $message->recomputeStatus();
+        // ── Dispatch background processing (push, mail, WhatsApp) ──
+        SendCampaignMessage::dispatch($message);
 
         $labels = [
             'push'     => 'notification push',
             'mail'     => 'e-mail',
             'whatsapp' => 'WhatsApp',
         ];
-        $used = implode(', ', array_map(fn ($c) => $labels[$c] ?? $c, $channels));
+        $used = implode(', ', array_map(fn($c) => $labels[$c] ?? $c, $channels));
 
         return redirect()
             ->route('messaging.index')
-            ->with('success', "Message envoyé à {$clients->count()} client(s) via : {$used}.");
+            ->with('success', "Message en cours d’envoi à {$clients->count()} client(s) via : {$used}.");
     }
 }

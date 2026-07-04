@@ -12,7 +12,7 @@
                 {{ $client->company_name }}
             </a>
             <span class="text-slate-300">/</span>
-            <span class="text-[12.5px] font-semibold text-slate-800">Nouvelle demande bonus</span>
+            <span class="text-[12.5px] font-semibold text-slate-800">{{ __('demandes.create_breadcrumb') }}</span>
         </div>
 
         {{-- Flash --}}
@@ -48,7 +48,8 @@
                                 <p class="text-[12px] text-slate-500">{{ $client->email }}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">Solde points
+                                <p class="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                                    {{ __('demandes.create_points_label') }}
                                 </p>
                                 <p class="text-[18px] font-black text-slate-900">
                                     {{ number_format($client->points_balance, 0, ',', ' ') }}
@@ -60,13 +61,14 @@
                         {{-- Choose bonus level --}}
                         <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
                             <div class="border-b border-slate-100 px-5 py-4">
-                                <h2 class="text-[13px] font-bold text-slate-800">Choisir un bonus</h2>
-                                <p class="mt-0.5 text-[12px] text-slate-400">Sélectionnez le bonus que le client
-                                    souhaite obtenir</p>
+                                <h2 class="text-[13px] font-bold text-slate-800">
+                                    {{ __('demandes.create_choose_title') }}</h2>
+                                <p class="mt-0.5 text-[12px] text-slate-400">{{ __('demandes.create_choose_sub') }}</p>
                             </div>
                             <div class="p-5">
                                 @if ($bonusLevels->isEmpty())
-                                    <p class="py-6 text-center text-[13px] text-slate-400">Aucun bonus actif configuré.
+                                    <p class="py-6 text-center text-[13px] text-slate-400">
+                                        {{ __('demandes.create_no_bonus') }}
                                     </p>
                                 @else
                                     <div class="flex flex-col gap-3" x-data="{ selected: null }">
@@ -107,12 +109,12 @@
                                                         @if (!$canAfford)
                                                             <span
                                                                 class="rounded-full bg-red-50 px-2 py-0.5 text-[10.5px] font-bold text-red-500">
-                                                                Insuffisant
+                                                                {{ __('demandes.create_badge_insufficient') }}
                                                             </span>
                                                         @else
                                                             <span
                                                                 class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10.5px] font-bold text-emerald-600">
-                                                                Disponible
+                                                                {{ __('demandes.create_badge_available') }}
                                                             </span>
                                                         @endif
                                                     </div>
@@ -123,17 +125,17 @@
                                                     <div class="mt-2 flex items-center gap-4 text-[12px]">
                                                         <span class="font-bold text-amber-600">
                                                             {{ number_format($bonus->required_points, 0, ',', ' ') }}
-                                                            pts requis
+                                                            {{ __('demandes.create_pts_required') }}
                                                         </span>
                                                         @if ($canAfford)
                                                             <span class="text-slate-400">
-                                                                Reste:
+                                                                {{ __('demandes.create_pts_remaining') }}
                                                                 {{ number_format($client->points_balance - $bonus->required_points, 0, ',', ' ') }}
                                                                 pts
                                                             </span>
                                                         @else
                                                             <span class="text-red-400">
-                                                                Manque:
+                                                                {{ __('demandes.create_pts_missing') }}
                                                                 {{ number_format($bonus->required_points - $client->points_balance, 0, ',', ' ') }}
                                                                 pts
                                                             </span>
@@ -153,11 +155,13 @@
                         {{-- Notes --}}
                         <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
                             <div class="border-b border-slate-100 px-5 py-4">
-                                <h2 class="text-[13px] font-bold text-slate-800">Notes <span
-                                        class="text-slate-400 font-normal">(optionnel)</span></h2>
+                                <h2 class="text-[13px] font-bold text-slate-800">
+                                    {{ __('demandes.create_notes_title') }} <span
+                                        class="text-slate-400 font-normal">{{ __('demandes.create_notes_optional') }}</span>
+                                </h2>
                             </div>
                             <div class="p-5">
-                                <textarea name="notes" rows="3" placeholder="Ajouter des informations complémentaires…"
+                                <textarea name="notes" rows="3" placeholder="{{ __('demandes.create_notes_placeholder') }}"
                                     class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[13px] text-slate-700 focus:border-amber-400 focus:outline-none focus:ring-0">{{ old('notes') }}</textarea>
                             </div>
                         </div>
@@ -166,7 +170,7 @@
                         <div class="flex items-center justify-end gap-3">
                             <a href="{{ route('clients.show', $client->id) }}"
                                 class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
-                                Annuler
+                                {{ __('demandes.create_btn_cancel') }}
                             </a>
                             <button type="submit"
                                 class="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-900 px-6 text-[13px] font-bold text-white hover:bg-slate-700 transition-colors">
@@ -176,7 +180,7 @@
                                     <rect x="2" y="7" width="20" height="5" />
                                     <line x1="12" y1="22" x2="12" y2="7" />
                                 </svg>
-                                Soumettre la demande
+                                {{ __('demandes.create_btn_submit') }}
                             </button>
                         </div>
 
@@ -189,9 +193,9 @@
 
                 {{-- How it works --}}
                 <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                    <h3 class="mb-4 text-[13px] font-bold text-slate-800">Comment ça marche ?</h3>
+                    <h3 class="mb-4 text-[13px] font-bold text-slate-800">{{ __('demandes.create_how_title') }}</h3>
                     <ol class="flex flex-col gap-4">
-                        @foreach ([['Client sélectionne un bonus', 'Le client choisit un niveau de bonus correspondant à ses points.', 'bg-amber-50 text-amber-600'], ['Demande soumise', 'L\'administrateur crée la demande au nom du client.', 'bg-slate-100 text-slate-600'], ['Approbation admin', 'L\'admin vérifie et approuve ou rejette la demande.', 'bg-blue-50 text-blue-600'], ['Points déduits', 'Les points sont automatiquement déduits du solde client.', 'bg-red-50 text-red-500'], ['Bonus livré', 'Le bonus physique est remis au client et la demande est clôturée.', 'bg-emerald-50 text-emerald-600']] as $i => [$title, $desc, $cls])
+                        @foreach ([[__('demandes.create_step1_title'), __('demandes.create_step1_desc'), 'bg-amber-50 text-amber-600'], [__('demandes.create_step2_title'), __('demandes.create_step2_desc'), 'bg-slate-100 text-slate-600'], [__('demandes.create_step3_title'), __('demandes.create_step3_desc'), 'bg-blue-50 text-blue-600'], [__('demandes.create_step4_title'), __('demandes.create_step4_desc'), 'bg-red-50 text-red-500'], [__('demandes.create_step5_title'), __('demandes.create_step5_desc'), 'bg-emerald-50 text-emerald-600']] as $i => [$title, $desc, $cls])
                             <li class="flex items-start gap-3">
                                 <span
                                     class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black {{ $cls }}">
@@ -218,7 +222,7 @@
                 @if ($pendingRequests->isNotEmpty())
                     <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
                         <h3 class="mb-3 text-[12.5px] font-bold text-amber-800">
-                            {{ $pendingRequests->count() }} demande(s) en attente
+                            {{ str_replace(':count', $pendingRequests->count(), __('demandes.create_pending_count')) }}
                         </h3>
                         <div class="flex flex-col gap-2">
                             @foreach ($pendingRequests as $pr)

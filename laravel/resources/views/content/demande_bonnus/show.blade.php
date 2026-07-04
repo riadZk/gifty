@@ -282,7 +282,7 @@
     @php
         $sCfg = [
             'pending' => [
-                'En attente',
+                __('demandes.status_pending'),
                 'text-amber-700',
                 'bg-amber-50',
                 'border-amber-200',
@@ -292,7 +292,7 @@
                 '--ac:#f59e0b;--bg:#fffbeb;',
             ],
             'approved' => [
-                'Approuvée',
+                __('demandes.status_approved'),
                 'text-emerald-700',
                 'bg-emerald-50',
                 'border-emerald-200',
@@ -302,7 +302,7 @@
                 '--ac:#10b981;--bg:#f0fdf4;',
             ],
             'rejected' => [
-                'Rejetée',
+                __('demandes.status_rejected'),
                 'text-red-700',
                 'bg-red-50',
                 'border-red-200',
@@ -312,7 +312,7 @@
                 '--ac:#ef4444;--bg:#fef2f2;',
             ],
             'delivered' => [
-                'Livrée',
+                __('demandes.status_delivered'),
                 'text-blue-700',
                 'bg-blue-50',
                 'border-blue-200',
@@ -361,15 +361,15 @@
                 </a>
                 <div>
                     <nav class="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400">
-                        <span>Demandes Bonus</span>
+                        <span>{{ __('demandes.breadcrumb_requests') }}</span>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-3 w-3">
                             <path d="m9 18 6-6-6-6" />
                         </svg>
                         <span class="text-slate-600">{{ $dbId }}</span>
                     </nav>
-                    <h1 class="text-[22px] font-black tracking-tight text-slate-900 leading-tight">Détail de la demande
-                        bonus</h1>
-                    <p class="text-[12.5px] text-slate-400">Consultez toutes les informations relatives à cette demande
+                    <h1 class="text-[22px] font-black tracking-tight text-slate-900 leading-tight">
+                        {{ __('demandes.show_title') }}</h1>
+                    <p class="text-[12.5px] text-slate-400">{{ __('demandes.show_subtitle') }}
                     </p>
                 </div>
             </div>
@@ -405,18 +405,19 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-[12.5px] font-semibold text-slate-500">Statut actuel :</span>
+                        <span
+                            class="text-[12.5px] font-semibold text-slate-500">{{ __('demandes.current_status') }}</span>
                         <span
                             class="inline-flex items-center gap-1.5 rounded-full border {{ $sBorder }} bg-white px-3 py-1 text-[12px] font-bold {{ $sTxt }}">
                             <span class="h-1.5 w-1.5 rounded-full {{ $sDot }}"></span>{{ $sLabel }}
                         </span>
                     </div>
-                    <p class="mt-0.5 text-[12px] text-slate-500">Soumise le
+                    <p class="mt-0.5 text-[12px] text-slate-500">{{ __('demandes.submitted_on') }}
                         {{ $bonusRequest->requested_at?->format('d/m/Y à H:i') }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 rounded-xl border border-white/70 bg-white/60 px-4 py-2 shadow-sm">
-                <span class="text-[11.5px] font-semibold text-slate-500">ID :</span>
+                <span class="text-[11.5px] font-semibold text-slate-500">{{ __('demandes.id_label') }}</span>
                 <span class="font-black text-slate-800 tracking-wide">{{ $dbId }}</span>
                 <button id="copy-id"
                     onclick="navigator.clipboard.writeText('{{ $dbId }}');document.getElementById('copy-id').innerHTML='<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'#10b981\' stroke-width=\'2.5\' class=\'h-3.5 w-3.5\'><path d=\'m5 12 5 5L20 7\'/></svg>'"
@@ -442,10 +443,16 @@
                     <div class="sc au d1">
                         <div class="rounded-t-[20px] bg-gradient-to-br from-blue-500 to-blue-700 px-5 pt-5 pb-9">
                             <div class="flex items-start justify-between">
-                                <div
-                                    class="grid h-12 w-12 place-items-center rounded-2xl bg-white/20 text-[16px] font-black text-white backdrop-blur-sm">
-                                    {{ strtoupper(substr($client->company_name, 0, 2)) }}
-                                </div>
+                                @php $clientPicture = $client->getFirstMediaUrl('picture'); @endphp
+                                @if ($clientPicture)
+                                    <img src="{{ $clientPicture }}" alt="{{ $client->company_name }}"
+                                        class="h-12 w-12 rounded-2xl object-cover shadow-md ring-2 ring-white/30">
+                                @else
+                                    <div
+                                        class="grid h-12 w-12 place-items-center rounded-2xl bg-white/20 text-[16px] font-black text-white backdrop-blur-sm">
+                                        {{ strtoupper(substr($client->company_name, 0, 2)) }}
+                                    </div>
+                                @endif
                                 <a href="{{ route('clients.show', $client->id) }}"
                                     class="rounded-lg bg-white/20 p-1.5 text-white hover:bg-white/30 transition-colors">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -457,7 +464,13 @@
                             <div class="mt-3">
                                 <div class="text-[15px] font-black text-white">{{ $client->company_name }}</div>
                                 @php
-                                    $csm = ['active' => ['Client actif', 'bg-emerald-400/30 text-emerald-100'], 'blocked' => ['Bloqué', 'bg-red-400/30 text-red-100']];
+                                    $csm = [
+                                        'active' => [
+                                            __('demandes.client_active'),
+                                            'bg-emerald-400/30 text-emerald-100',
+                                        ],
+                                        'blocked' => [__('demandes.client_blocked'), 'bg-red-400/30 text-red-100'],
+                                    ];
                                     [$csl, $csc] = $csm[$client->status] ?? ['—', 'bg-white/20 text-white/80'];
                                 @endphp
                                 <span
@@ -473,7 +486,7 @@
                                         <rect x="2" y="5" width="20" height="14" rx="2" />
                                         <path d="M2 10h20" />
                                     </svg>
-                                    <span class="text-slate-400">Code PCC</span>
+                                    <span class="text-slate-400">{{ __('demandes.label_pcc_code') }}</span>
                                     <span
                                         class="ml-auto font-bold text-slate-800">{{ $client->pcc_customer_code }}</span>
                                 </div>
@@ -485,7 +498,7 @@
                                         d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                                     <polyline points="22,6 12,13 2,6" />
                                 </svg>
-                                <span class="text-slate-400">Email</span>
+                                <span class="text-slate-400">{{ __('demandes.label_email') }}</span>
                                 <span
                                     class="ml-auto font-semibold text-slate-700 truncate max-w-[150px]">{{ $client->email }}</span>
                             </div>
@@ -496,7 +509,7 @@
                                         <path
                                             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
                                     </svg>
-                                    <span class="text-slate-400">Téléphone</span>
+                                    <span class="text-slate-400">{{ __('demandes.label_phone') }}</span>
                                     <span class="ml-auto font-semibold text-slate-700">{{ $client->phone }}</span>
                                 </div>
                             @endif
@@ -508,7 +521,7 @@
                                     <line x1="8" y1="2" x2="8" y2="6" />
                                     <line x1="3" y1="10" x2="21" y2="10" />
                                 </svg>
-                                <span class="text-slate-400">Membre depuis</span>
+                                <span class="text-slate-400">{{ __('demandes.label_member_since') }}</span>
                                 <span
                                     class="ml-auto font-semibold text-slate-700">{{ $client->created_at->format('d M Y') }}</span>
                             </div>
@@ -523,31 +536,34 @@
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                     <polyline points="14 2 14 8 20 8" />
                                 </svg></div>
-                            <span class="sc-title">Résumé de la demande</span>
+                            <span class="sc-title">{{ __('demandes.summary_title') }}</span>
                         </div>
                         <div class="p-5 flex flex-col gap-3.5">
                             <div class="flex items-start justify-between gap-3">
-                                <span class="text-[11.5px] font-semibold text-slate-400 mt-0.5">Date</span>
+                                <span
+                                    class="text-[11.5px] font-semibold text-slate-400 mt-0.5">{{ __('demandes.summary_date') }}</span>
                                 <span
                                     class="text-[12.5px] font-bold text-slate-800 text-right">{{ $bonusRequest->requested_at?->format('d/m/Y - H:i') }}</span>
                             </div>
                             <div class="h-px bg-slate-50"></div>
                             <div class="flex items-center justify-between gap-3">
-                                <span class="text-[11.5px] font-semibold text-slate-400">Demandé par</span>
+                                <span
+                                    class="text-[11.5px] font-semibold text-slate-400">{{ __('demandes.summary_requested_by') }}</span>
                                 <span
                                     class="text-[12.5px] font-bold text-slate-800">{{ $client->company_name }}</span>
                             </div>
                             <div class="h-px bg-slate-50"></div>
                             <div class="flex items-center justify-between gap-3">
-                                <span class="text-[11.5px] font-semibold text-slate-400">Canal</span>
                                 <span
-                                    class="inline-flex rounded-full bg-violet-50 px-3 py-0.5 text-[11.5px] font-bold text-violet-700">Portail
-                                    client</span>
+                                    class="text-[11.5px] font-semibold text-slate-400">{{ __('demandes.summary_channel') }}</span>
+                                <span
+                                    class="inline-flex rounded-full bg-violet-50 px-3 py-0.5 text-[11.5px] font-bold text-violet-700">{{ __('demandes.summary_channel_value') }}</span>
                             </div>
                             @if ($bonusRequest->notes)
                                 <div class="h-px bg-slate-50"></div>
                                 <div>
-                                    <p class="mb-1.5 text-[11.5px] font-semibold text-slate-400">Notes du client</p>
+                                    <p class="mb-1.5 text-[11.5px] font-semibold text-slate-400">
+                                        {{ __('demandes.summary_notes') }}</p>
                                     <div
                                         class="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-[12.5px] text-slate-600 leading-relaxed">
                                         {{ $bonusRequest->notes }}</div>
@@ -568,7 +584,7 @@
                                 <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
                                 <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
                             </svg></div>
-                        <span class="sc-title">Bonus demandé</span>
+                        <span class="sc-title">{{ __('demandes.bonus_card_title') }}</span>
                     </div>
                     <div class="p-5 flex items-start gap-4">
                         <div class="shrink-0 overflow-hidden rounded-2xl border border-slate-100 shadow-sm"
@@ -592,8 +608,7 @@
                                 <span class="text-[16px] font-black text-slate-900">{{ $bonus->name }}</span>
                                 @if ($bonus->is_active)
                                     <span
-                                        class="inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">Bonus
-                                        actif</span>
+                                        class="inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">{{ __('demandes.bonus_active_badge') }}</span>
                                 @endif
                             </div>
                             <p class="text-[13px] font-semibold text-slate-500">{{ $bonus->reward_name }}</p>
@@ -604,18 +619,18 @@
                             <div class="mt-4 grid grid-cols-3 gap-3">
                                 <div class="sp">
                                     <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                        Points requis</div>
+                                        {{ __('demandes.bonus_pts_required') }}</div>
                                     <div class="text-[17px] font-black text-amber-500">
                                         {{ number_format($bonusRequest->points_required, 0, ',', ' ') }} pts</div>
                                 </div>
                                 <div class="sp">
                                     <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                        Quantité</div>
+                                        {{ __('demandes.bonus_quantity') }}</div>
                                     <div class="text-[17px] font-black text-slate-800">1</div>
                                 </div>
                                 <div class="sp">
                                     <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                                        Valeur estimée</div>
+                                        {{ __('demandes.bonus_value') }}</div>
                                     <div class="text-[17px] font-black text-slate-800">—</div>
                                 </div>
                             </div>
@@ -631,7 +646,7 @@
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="M12 6v6l4 2" />
                             </svg></div>
-                        <span class="sc-title">Situation des points du client</span>
+                        <span class="sc-title">{{ __('demandes.points_title') }}</span>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start gap-4">
@@ -646,8 +661,10 @@
                                         </svg></div>
                                     <div class="text-[15px] font-black text-blue-900">
                                         {{ number_format($client->points_balance, 2, ',', ' ') }} pts</div>
-                                    <div class="text-[10.5px] font-bold text-blue-500">Solde actuel</div>
-                                    <div class="text-[10px] text-blue-400">Avant cette demande</div>
+                                    <div class="text-[10.5px] font-bold text-blue-500">
+                                        {{ __('demandes.points_current') }}</div>
+                                    <div class="text-[10px] text-blue-400">{{ __('demandes.points_before_label') }}
+                                    </div>
                                 </div>
                                 <div
                                     class="rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-amber-100/50 p-3">
@@ -659,8 +676,10 @@
                                         </svg></div>
                                     <div class="text-[15px] font-black text-amber-800">
                                         {{ number_format($pReq, 2, ',', ' ') }} pts</div>
-                                    <div class="text-[10.5px] font-bold text-amber-500">Points requis</div>
-                                    <div class="text-[10px] text-amber-400">Pour ce bonus</div>
+                                    <div class="text-[10.5px] font-bold text-amber-500">
+                                        {{ __('demandes.points_required_label') }}</div>
+                                    <div class="text-[10px] text-amber-400">{{ __('demandes.points_for_bonus') }}
+                                    </div>
                                 </div>
                                 <div
                                     class="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-emerald-100/50 p-3">
@@ -671,8 +690,10 @@
                                         </svg></div>
                                     <div class="text-[15px] font-black text-emerald-800">
                                         {{ number_format($pAfter, 2, ',', ' ') }} pts</div>
-                                    <div class="text-[10.5px] font-bold text-emerald-500">Solde après échange</div>
-                                    <div class="text-[10px] text-emerald-400">Si approuvée</div>
+                                    <div class="text-[10.5px] font-bold text-emerald-500">
+                                        {{ __('demandes.points_after') }}</div>
+                                    <div class="text-[10px] text-emerald-400">{{ __('demandes.points_if_approved') }}
+                                    </div>
                                 </div>
                             </div>
                             <div class="hidden md:block shrink-0">
@@ -686,7 +707,7 @@
                                     <text x="48" y="44" text-anchor="middle" font-size="15" font-weight="900"
                                         fill="#1e40af" font-family="Manrope,sans-serif">{{ $pct }}%</text>
                                     <text x="48" y="58" text-anchor="middle" font-size="8.5" fill="#94a3b8"
-                                        font-family="Manrope,sans-serif">Restants</text>
+                                        font-family="Manrope,sans-serif">{{ __('demandes.points_remaining_svg') }}</text>
                                 </svg>
                             </div>
                         </div>
@@ -698,8 +719,7 @@
                                     <circle cx="12" cy="12" r="10" />
                                     <path d="M12 8v4m0 4h.01" />
                                 </svg>
-                                Solde insuffisant — il manque
-                                {{ number_format($pReq - $client->points_balance, 0, ',', ' ') }} pts
+                                {{ str_replace(':pts', number_format($pReq - $client->points_balance, 0, ',', ' '), __('demandes.points_insufficient')) }}
                             </div>
                         @endif
                     </div>
@@ -716,37 +736,37 @@
                                 stroke-width="1.8" class="h-4 w-4">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                             </svg></div>
-                        <span class="sc-title">Suivi de la demande</span>
+                        <span class="sc-title">{{ __('demandes.timeline_title') }}</span>
                     </div>
                     <div class="p-5">
                         @php
                             $steps = [
                                 [
-                                    'label' => 'Demande créée',
+                                    'label' => __('demandes.step_created'),
                                     'sub' => $bonusRequest->requested_at?->format('d/m/Y - H:i'),
                                     'done' => true,
                                     'active' => false,
                                 ],
                                 [
-                                    'label' => 'En attendant validation',
-                                    'sub' => "Par l'administrateur",
+                                    'label' => __('demandes.step_pending'),
+                                    'sub' => __('demandes.step_pending_sub'),
                                     'done' => !$bonusRequest->isPending(),
                                     'active' => $bonusRequest->isPending(),
                                 ],
                                 [
-                                    'label' => 'Approuvée',
+                                    'label' => __('demandes.step_approved'),
                                     'sub' => $bonusRequest->approved_at?->format('d/m/Y - H:i') ?? '—',
                                     'done' => $bonusRequest->isApproved() || $bonusRequest->isDelivered(),
                                     'active' => false,
                                 ],
                                 [
-                                    'label' => 'Préparée pour livraison',
+                                    'label' => __('demandes.step_preparing'),
                                     'sub' => '—',
                                     'done' => $bonusRequest->isDelivered(),
                                     'active' => false,
                                 ],
                                 [
-                                    'label' => 'Livrée au client',
+                                    'label' => __('demandes.step_delivered'),
                                     'sub' => '—',
                                     'done' => $bonusRequest->isDelivered(),
                                     'active' => false,
@@ -803,7 +823,7 @@
                                 stroke-width="1.8" class="h-4 w-4">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                             </svg></div>
-                        <span class="sc-title">Actions administrateur</span>
+                        <span class="sc-title">{{ __('demandes.actions_title') }}</span>
                     </div>
                     <div class="p-5 flex flex-col gap-3">
                         @if ($bonusRequest->isPending())
@@ -814,7 +834,7 @@
                                     class="h-4 w-4">
                                     <path d="m5 12 5 5L20 7" />
                                 </svg>
-                                Approuver la demande
+                                {{ __('demandes.btn_approve') }}
                             </button>
                             <button id="btn-reject" class="abtn reject"
                                 data-url="{{ route('demandes.reject', $bonusRequest->id) }}">
@@ -822,7 +842,7 @@
                                     class="h-4 w-4">
                                     <path d="M18 6 6 18M6 6l12 12" />
                                 </svg>
-                                Refuser la demande
+                                {{ __('demandes.btn_reject') }}
                             </button>
                             <button class="abtn neutral">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -830,18 +850,17 @@
                                     <circle cx="12" cy="12" r="10" />
                                     <path d="M12 8v4m0 4h.01" />
                                 </svg>
-                                Demander plus d'informations
+                                {{ __('demandes.btn_more_info') }}
                             </button>
                         @elseif($bonusRequest->isApproved())
-                            <p class="text-center text-[12px] text-slate-500">Le bonus a été approuvé. Marquez-le comme
-                                livré une fois remis au client.</p>
+                            <p class="text-center text-[12px] text-slate-500">{{ __('demandes.approved_hint') }}</p>
                             <button id="btn-deliver" class="abtn deliver"
                                 data-url="{{ route('demandes.deliver', $bonusRequest->id) }}">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     class="h-4 w-4">
                                     <path d="M5 12h14M12 5l7 7-7 7" />
                                 </svg>
-                                Marquer comme livré
+                                {{ __('demandes.btn_deliver') }}
                             </button>
                         @elseif($bonusRequest->isRejected())
                             <div class="flex flex-col items-center gap-2 py-3 text-center">
@@ -850,7 +869,8 @@
                                         class="h-5 w-5">
                                         <path d="M18 6 6 18M6 6l12 12" />
                                     </svg></div>
-                                <p class="text-[13px] font-bold text-slate-700">Demande rejetée</p>
+                                <p class="text-[13px] font-bold text-slate-700">{{ __('demandes.rejected_label') }}
+                                </p>
                                 <p class="text-[12px] text-slate-400">
                                     {{ $bonusRequest->rejected_at?->format('d/m/Y à H:i') }}</p>
                             </div>
@@ -861,16 +881,17 @@
                                         class="h-5 w-5">
                                         <path d="m5 12 5 5L20 7" />
                                     </svg></div>
-                                <p class="text-[13px] font-bold text-slate-700">Bonus livré</p>
-                                <p class="text-[12px] text-slate-400">Cette demande est terminée.</p>
+                                <p class="text-[13px] font-bold text-slate-700">{{ __('demandes.delivered_label') }}
+                                </p>
+                                <p class="text-[12px] text-slate-400">{{ __('demandes.delivered_done') }}</p>
                             </div>
                         @endif
 
                         <div class="mt-1">
-                            <label class="mb-1.5 block text-[12px] font-semibold text-slate-500">Commentaires
-                                (optionnel)</label>
+                            <label
+                                class="mb-1.5 block text-[12px] font-semibold text-slate-500">{{ __('demandes.comment_label') }}</label>
                             <div class="relative">
-                                <textarea id="comment-box" rows="3" maxlength="255" placeholder="Ajouter un commentaire..."
+                                <textarea id="comment-box" rows="3" maxlength="255" placeholder="{{ __('demandes.comment_placeholder') }}"
                                     oninput="document.getElementById('char-count').textContent=this.value.length+'/255'"
                                     class="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[12.5px] text-slate-700 focus:border-slate-300 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-100 transition-all"></textarea>
                                 <span id="char-count"
@@ -889,23 +910,26 @@
                                     stroke-width="1.8" class="h-4 w-4">
                                     <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                                 </svg></div>
-                            <span class="sc-title">Transaction de Points</span>
+                            <span class="sc-title">{{ __('demandes.tx_title') }}</span>
                         </div>
                         <div class="p-5 flex flex-col gap-2">
                             <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
-                                <span class="text-[12px] font-semibold text-slate-500">Avant</span>
+                                <span
+                                    class="text-[12px] font-semibold text-slate-500">{{ __('demandes.tx_before') }}</span>
                                 <span
                                     class="text-[14px] font-black text-slate-800">{{ number_format($tx->points_before, 0, ',', ' ') }}
                                     pts</span>
                             </div>
                             <div class="flex items-center justify-between rounded-xl bg-red-50 px-4 py-3">
-                                <span class="text-[12px] font-semibold text-red-400">Déduits</span>
+                                <span
+                                    class="text-[12px] font-semibold text-red-400">{{ __('demandes.tx_deducted') }}</span>
                                 <span class="text-[14px] font-black text-red-600">−
                                     {{ number_format($tx->points_used, 0, ',', ' ') }} pts</span>
                             </div>
                             <div class="h-px bg-slate-100"></div>
                             <div class="flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3">
-                                <span class="text-[12px] font-semibold text-emerald-500">Après</span>
+                                <span
+                                    class="text-[12px] font-semibold text-emerald-500">{{ __('demandes.tx_after') }}</span>
                                 <span
                                     class="text-[14px] font-black text-emerald-700">{{ number_format($tx->points_after, 0, ',', ' ') }}
                                     pts</span>
@@ -937,7 +961,7 @@
             function setLoading(btn, on) {
                 if (on) {
                     btn._html = btn.innerHTML;
-                    btn.innerHTML = '<span class="spin-ico"></span> Traitement…';
+                    btn.innerHTML = '<span class="spin-ico"></span> {{ __('demandes.js_processing') }}';
                     btn.classList.add('loading');
                 } else {
                     btn.innerHTML = btn._html;
@@ -971,12 +995,12 @@
                     isConfirmed
                 } = await MySwal.fire({
                     icon: 'question',
-                    title: 'Approuver la demande ?',
-                    html: `<p style="color:#64748b;font-size:13px;">Cela déduira <strong style="color:#f59e0b">${pts} pts</strong> du solde du client.</p>`,
+                    title: '{{ __('demandes.js_approve_title') }}',
+                    html: `<p style="color:#64748b;font-size:13px;">{{ str_replace(':pts', '${pts}', __('demandes.js_approve_html')) }}</p>`,
                     showCancelButton: true,
-                    confirmButtonText: '✓ Approuver',
+                    confirmButtonText: '{{ __('demandes.js_approve_btn') }}',
                     confirmButtonColor: '#10b981',
-                    cancelButtonText: 'Annuler',
+                    cancelButtonText: '{{ __('demandes.js_cancel') }}',
                     cancelButtonColor: '#94a3b8',
                     reverseButtons: true,
                 });
@@ -988,8 +1012,8 @@
                 if (res.ok) {
                     await MySwal.fire({
                         icon: 'success',
-                        title: 'Approuvée !',
-                        text: 'Les points ont été déduits.',
+                        title: '{{ __('demandes.js_approve_ok_title') }}',
+                        text: '{{ __('demandes.js_approve_ok_text') }}',
                         timer: 1800,
                         timerProgressBar: true,
                         showConfirmButton: false
@@ -1000,8 +1024,8 @@
                     setLoading(btn, false);
                     MySwal.fire({
                         icon: 'error',
-                        title: 'Erreur',
-                        text: d.message ?? 'Une erreur est survenue.',
+                        title: '{{ __('demandes.js_error_title') }}',
+                        text: d.message ?? '{{ __('demandes.js_error_generic') }}',
                         confirmButtonColor: '#ef4444'
                     });
                 }
@@ -1017,13 +1041,13 @@
                     value: reason
                 } = await MySwal.fire({
                     icon: 'warning',
-                    title: 'Refuser la demande ?',
-                    html: `<p style="color:#64748b;font-size:13px;margin-bottom:10px;">Vous pouvez ajouter un motif de refus.</p>
-                  <textarea id="swal-reason" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;padding:10px 12px;font-size:13px;color:#334155;resize:none;outline:none;" rows="2" placeholder="Motif du refus (optionnel)…">${comment}</textarea>`,
+                    title: '{{ __('demandes.js_reject_title') }}',
+                    html: `<p style="color:#64748b;font-size:13px;margin-bottom:10px;">{{ __('demandes.js_reject_html_hint') }}</p>
+                  <textarea id="swal-reason" style="width:100%;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;padding:10px 12px;font-size:13px;color:#334155;resize:none;outline:none;" rows="2" placeholder="{{ __('demandes.js_reject_placeholder') }}">${comment}</textarea>`,
                     showCancelButton: true,
-                    confirmButtonText: '✗ Refuser',
+                    confirmButtonText: '{{ __('demandes.js_reject_btn') }}',
                     confirmButtonColor: '#ef4444',
-                    cancelButtonText: 'Annuler',
+                    cancelButtonText: '{{ __('demandes.js_cancel') }}',
                     cancelButtonColor: '#94a3b8',
                     reverseButtons: true,
                     preConfirm: () => document.getElementById('swal-reason')?.value ?? '',
@@ -1036,8 +1060,8 @@
                 if (res.ok) {
                     await MySwal.fire({
                         icon: 'warning',
-                        title: 'Demande refusée',
-                        text: 'La demande a été marquée comme rejetée.',
+                        title: '{{ __('demandes.js_reject_ok_title') }}',
+                        text: '{{ __('demandes.js_reject_ok_text') }}',
                         timer: 1800,
                         timerProgressBar: true,
                         showConfirmButton: false
@@ -1048,8 +1072,8 @@
                     setLoading(btn, false);
                     MySwal.fire({
                         icon: 'error',
-                        title: 'Erreur',
-                        text: d.message ?? 'Erreur.',
+                        title: '{{ __('demandes.js_error_title') }}',
+                        text: d.message ?? '{{ __('demandes.js_error_generic') }}',
                         confirmButtonColor: '#ef4444'
                     });
                 }
@@ -1063,12 +1087,12 @@
                     isConfirmed
                 } = await MySwal.fire({
                     icon: 'info',
-                    title: 'Confirmer la livraison ?',
-                    text: 'Le bonus a bien été remis au client ?',
+                    title: '{{ __('demandes.js_deliver_title') }}',
+                    text: '{{ __('demandes.js_deliver_text') }}',
                     showCancelButton: true,
-                    confirmButtonText: '→ Confirmer',
+                    confirmButtonText: '{{ __('demandes.js_deliver_btn') }}',
                     confirmButtonColor: '#3b82f6',
-                    cancelButtonText: 'Annuler',
+                    cancelButtonText: '{{ __('demandes.js_cancel') }}',
                     cancelButtonColor: '#94a3b8',
                     reverseButtons: true,
                 });
@@ -1080,8 +1104,8 @@
                 if (res.ok) {
                     await MySwal.fire({
                         icon: 'success',
-                        title: 'Bonus livré !',
-                        text: 'La demande est maintenant terminée.',
+                        title: '{{ __('demandes.js_deliver_ok_title') }}',
+                        text: '{{ __('demandes.js_deliver_ok_text') }}',
                         timer: 1800,
                         timerProgressBar: true,
                         showConfirmButton: false
@@ -1092,8 +1116,8 @@
                     setLoading(btn, false);
                     MySwal.fire({
                         icon: 'error',
-                        title: 'Erreur',
-                        text: d.message ?? 'Erreur.',
+                        title: '{{ __('demandes.js_error_title') }}',
+                        text: d.message ?? '{{ __('demandes.js_error_generic') }}',
                         confirmButtonColor: '#ef4444'
                     });
                 }
